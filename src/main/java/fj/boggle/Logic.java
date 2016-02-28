@@ -50,7 +50,9 @@ public class Logic {
 
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[i].length; j++) {
-				if (board[i][j].equals(letters[k])) {
+				if (k < letters.length
+						&& board[i][j].equalsIgnoreCase(String
+								.valueOf(letters[k]))) {
 					stack.push(board[i][j].charAt(0));
 					k++;
 
@@ -73,46 +75,63 @@ public class Logic {
 	public void checkAround(int i, int j, int index) {
 		// mark each cell as visited when push onto the stack
 		int k = index;
-		if (inBounds(i + 1, j) && board[i + 1][j].equals(letters[k])) {
-			stack.push(board[i][j].charAt(0));
+		if (inBounds(i + 1, j) && k < letters.length
+				&& board[i + 1][j].equalsIgnoreCase(String.valueOf(letters[k]))) {
+			stack.push(board[i + 1][j].charAt(0));
 			k++;
 			checkAround(i + 1, j, k);
 		}
-		if (inBounds(i + 1, j - 1) && board[i + 1][j - 1].equals(letters[k])) {
-			stack.push(board[i][j].charAt(0));
+		if (inBounds(i + 1, j - 1)
+				&& k < letters.length
+				&& board[i + 1][j - 1].equalsIgnoreCase(String
+						.valueOf(letters[k]))) {
+			stack.push(board[i + 1][j - 1].charAt(0));
 			k++;
 			checkAround(i + 1, j - 1, k);
 		}
-		if (inBounds(i + 1, j + 1) && board[i + 1][j + 1].equals(letters[k])) {
-			stack.push(board[i][j].charAt(0));
+		if (inBounds(i + 1, j + 1)
+				&& k < letters.length
+				&& board[i + 1][j + 1].equalsIgnoreCase(String
+						.valueOf(letters[k]))) {
+			stack.push(board[i + 1][j + 1].charAt(0));
 			k++;
 			checkAround(i + 1, j + 1, k);
 		}
-		if (inBounds(i, j - 1) && board[i][j - 1].equals(letters[k])) {
-			stack.push(board[i][j].charAt(0));
+		if (inBounds(i, j - 1) && k < letters.length
+				&& board[i][j - 1].equalsIgnoreCase(String.valueOf(letters[k]))) {
+			stack.push(board[i][j - 1].charAt(0));
 			k++;
 			checkAround(i, j - 1, k);
 		}
-		if (inBounds(i, j + 1) && board[i][j + 1].equals(letters[k])) {
-			stack.push(board[i][j].charAt(0));
+		if (inBounds(i, j + 1) && k < letters.length
+				&& board[i][j + 1].equalsIgnoreCase(String.valueOf(letters[k]))) {
+			stack.push(board[i][j + 1].charAt(0));
 			k++;
 			checkAround(i, j + 1, k);
 		}
-		if (inBounds(i - 1, j - 1) && board[i - 1][j - 1].equals(letters[k])) {
-			stack.push(board[i][j].charAt(0));
+		if (inBounds(i - 1, j - 1)
+				&& k < letters.length
+				&& board[i - 1][j - 1].equalsIgnoreCase(String
+						.valueOf(letters[k]))) {
+			stack.push(board[i - 1][j - 1].charAt(0));
 			k++;
 			checkAround(i - 1, j - 1, k);
 		}
-		if (inBounds(i - 1, j) && board[i - 1][j].equals(letters[k])) {
-			stack.push(board[i][j].charAt(0));
+		if (inBounds(i - 1, j) && k < letters.length
+				&& board[i - 1][j].equalsIgnoreCase(String.valueOf(letters[k]))) {
+			stack.push(board[i - 1][j].charAt(0));
 			k++;
 			checkAround(i - 1, j, k);
 		}
-		if (inBounds(i - 1, j + 1) && board[i - 1][j + 1].equals(letters[k])) {
-			stack.push(board[i][j].charAt(0));
+		if (inBounds(i - 1, j + 1)
+				&& k < letters.length
+				&& board[i - 1][j + 1].equalsIgnoreCase(String
+						.valueOf(letters[k]))) {
+			stack.push(board[i - 1][j + 1].charAt(0));
 			k++;
 			checkAround(i - 1, j + 1, k);
 		}
+		return;
 	}
 
 	public boolean inBounds(int i, int j) {
