@@ -31,15 +31,17 @@ public class BoggleThread extends Thread {
 							"tUX0EvhpmFmshGEJpal40dLinQHip1nvCqWjsnERTWgoGmbBcK")
 					.header("Accept", "application/json").asJson();
 		} catch (UnirestException e) {
-			System.out.println("You did enter a correct word.");
+			System.out.println("You did not enter a correct word.");
 
 		}
+		
+		System.out.println(response.getBody());
 
 	}
 
 	public static void main(String[] args) {
 
-		new BoggleThread("happy").start();
+		new BoggleThread("gjhkhky").start();
 	}
 
 }
