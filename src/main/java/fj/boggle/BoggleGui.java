@@ -46,9 +46,7 @@ public class BoggleGui extends JFrame {
 		Container container = getContentPane();
 		container.setLayout(new BorderLayout());
 
-		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new BorderLayout());
-		mainPanel.setBackground(Color.BLUE);
+		
 
 		// make a grid layout and connect it to the logic class
 		JPanel boardPanel = new JPanel();
@@ -70,12 +68,11 @@ public class BoggleGui extends JFrame {
 		JPanel leftPanel = new JPanel();
 		leftPanel.setLayout(new BorderLayout());
 
-		container.add(mainPanel, BorderLayout.CENTER);
-		container.add(boardPanel, BorderLayout.EAST);
+		container.add(boardPanel, BorderLayout.CENTER);
 		container.add(topPanel, BorderLayout.NORTH);
 		container.add(leftPanel, BorderLayout.WEST);
 
-		Font font = new Font("Berlin Sans FB", Font.PLAIN, 40);
+		Font font = new Font("Berlin Sans FB", Font.PLAIN, 35);
 
 		imageLabel = new JLabel(new ImageIcon("boggle.png"));
 		topPanel.add(imageLabel, BorderLayout.NORTH);
@@ -99,9 +96,11 @@ public class BoggleGui extends JFrame {
 		area.setForeground(Color.WHITE);
 		area.setFont(new Font("Berlin Sans FB", Font.PLAIN, 25));
 		area.setEditable(false);
+		area.setPreferredSize(new Dimension(200,50));
 
-		leftPanel.add(area, BorderLayout.WEST);
 		leftPanel.add(wordLabel, BorderLayout.SOUTH);
+		leftPanel.add(area, BorderLayout.WEST);
+		
 
 		wordLabel.addActionListener(new ActionListener() {
 
