@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 
 public class BoggleGui extends JFrame {
 
@@ -32,6 +33,7 @@ public class BoggleGui extends JFrame {
 	private JTextField wordLabel;
 
 	private JLabel[][] boggleBoard;
+	private BoggleThread thread;
 
 	public BoggleGui() {
 		setTitle("BOGGLE");
@@ -106,10 +108,17 @@ public class BoggleGui extends JFrame {
 
 			public void actionPerformed(ActionEvent arg0) {
 				boolean valid = false;
-				valid = log.checkWord(wordLabel.getText());
+				try {
+					valid = log.checkWord(wordLabel.getText());
+				} catch (TooSmallWordException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				if (valid) {
-					area.append(wordLabel.getText() + "\n");
-					wordLabel.setText("");
+					
+					thread = new BoggleThread(wordLabel.getText(), BoggleGui.this, wordLabel);
+					thread.start();
+					
 				}
 			}
 		});
@@ -133,6 +142,11 @@ public class BoggleGui extends JFrame {
 			timer.cancel();
 		}
 		return --interval;
+	}
+	
+	public void appendWord(String word){
+		area.append(word + "\n");
+		wordLabel.setText("");
 	}
 
 	public static void main(String[] args) {

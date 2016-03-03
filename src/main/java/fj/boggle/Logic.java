@@ -45,16 +45,14 @@ public class Logic {
 		}
 	}
 
-	public void startCode(String word) throws TooSmallWordException {
+	
 
+	public boolean checkWord(String word) throws TooSmallWordException {
+		
 		if (word.length() < 3) {
 			throw new TooSmallWordException();
 		}
-		checkWord(word);
-		callThread();
-	}
-
-	public boolean checkWord(String word) {
+		
 		this.word = word;
 		this.letters = word.toCharArray();
 		stack = new Stack<Character>();
@@ -167,8 +165,8 @@ public class Logic {
 	}
 
 	public void callThread() {
-		thread = new BoggleThread(word);
-		thread.start();
+		//thread = new BoggleThread(word);
+		//thread.start();
 	}
 
 	public static void main(String[] args) throws TooSmallWordException {
@@ -178,7 +176,7 @@ public class Logic {
 		System.out.println("Enter a word");
 		Scanner keyboard = new Scanner(System.in);
 		String word = keyboard.nextLine();
-		log.startCode(word);
+	//	log.startCode(word);
 		System.out.println(log.checkWord(word));
 	}
 }

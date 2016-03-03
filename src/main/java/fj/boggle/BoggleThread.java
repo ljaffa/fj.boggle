@@ -1,5 +1,9 @@
 package fj.boggle;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -8,10 +12,16 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 public class BoggleThread extends Thread {
 
 	private String word;
+	private BoggleGui frame;
+	private boolean caught;
+	private JTextField text;
 
-	public BoggleThread(String word) {
+	public BoggleThread(String word, BoggleGui frame, JTextField text) {
 
+		this.frame = frame;
 		this.word = word;
+		this.text = text;
+		this.caught = false; //initialize to false
 	}
 
 	@Override
@@ -32,16 +42,27 @@ public class BoggleThread extends Thread {
 					.header("Accept", "application/json").asJson();
 		} catch (UnirestException e) {
 			System.out.println("You did not enter a correct word.");
+			caught = true;
 
 		}
 		
 		//System.out.println(response.getBody());
+		if(!caught){
+		frame.appendWord(word);
+		}
+		else{
+			JOptionPane
+			.showMessageDialog(null,
+					"The word that was entered was not in the dictionary.");
+			text.setText("");
+		}
+		
 
 	}
 
 	public static void main(String[] args) {
 
-		new BoggleThread("gjhkhky").start();
+		//new BoggleThread("gjhkhky").start();
 	}
 
 }
