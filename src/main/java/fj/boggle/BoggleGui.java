@@ -18,7 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 public class BoggleGui extends JFrame {
 
@@ -48,11 +48,11 @@ public class BoggleGui extends JFrame {
 		Container container = getContentPane();
 		container.setLayout(new BorderLayout());
 
-		
-
 		// make a grid layout and connect it to the logic class
 		JPanel boardPanel = new JPanel();
 		boardPanel.setLayout(new GridLayout(4, 4));
+
+		Font letterFont = new Font("Calibri", Font.BOLD, 75);
 
 		boggle = log.fillBoard();
 		for (int row = 0; row < 4; row++) {
@@ -60,6 +60,12 @@ public class BoggleGui extends JFrame {
 				boggleBoard[row][col] = new JLabel();
 				boardPanel.add(boggleBoard[row][col]);
 				boggleBoard[row][col].setText(boggle[row][col]);
+				boggleBoard[row][col].setHorizontalAlignment(JLabel.CENTER);
+				boggleBoard[row][col].setVerticalAlignment(JLabel.CENTER);
+				boggleBoard[row][col].setFont(letterFont);
+				boggleBoard[row][col].setForeground(Color.BLUE);
+				boggleBoard[row][col].setBorder(new LineBorder(Color.BLACK, 1,
+						true));
 			}
 		}
 
@@ -98,11 +104,10 @@ public class BoggleGui extends JFrame {
 		area.setForeground(Color.WHITE);
 		area.setFont(new Font("Berlin Sans FB", Font.PLAIN, 25));
 		area.setEditable(false);
-		area.setPreferredSize(new Dimension(200,50));
+		area.setPreferredSize(new Dimension(200, 50));
 
 		leftPanel.add(wordLabel, BorderLayout.SOUTH);
 		leftPanel.add(area, BorderLayout.WEST);
-		
 
 		wordLabel.addActionListener(new ActionListener() {
 
@@ -115,10 +120,11 @@ public class BoggleGui extends JFrame {
 					e.printStackTrace();
 				}
 				if (valid) {
-					
-					thread = new BoggleThread(wordLabel.getText(), BoggleGui.this, wordLabel);
+
+					thread = new BoggleThread(wordLabel.getText(),
+							BoggleGui.this, wordLabel);
 					thread.start();
-					
+
 				}
 			}
 		});
@@ -143,8 +149,8 @@ public class BoggleGui extends JFrame {
 		}
 		return --interval;
 	}
-	
-	public void appendWord(String word){
+
+	public void appendWord(String word) {
 		area.append(word + "\n");
 		wordLabel.setText("");
 	}
