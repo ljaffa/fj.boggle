@@ -25,7 +25,7 @@ public class BoggleGui extends JFrame {
 
 	private JLabel timerLabel;
 	private JLabel imageLabel;
-	private int interval = 120;
+	private int interval = 121;
 	private Timer timer;
 	private TextArea area;
 	private JTextField wordLabel;
@@ -63,7 +63,7 @@ public class BoggleGui extends JFrame {
 		Font font = new Font("Berlin Sans FB", Font.PLAIN, 40);
 
 		imageLabel = new JLabel(new ImageIcon("boggle.png"));
-		topPanel.add(imageLabel, BorderLayout.SOUTH);
+		topPanel.add(imageLabel, BorderLayout.NORTH);
 		timerLabel = new JLabel();
 		timerLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -77,7 +77,7 @@ public class BoggleGui extends JFrame {
 		wordLabel.setFont(font);
 
 		timerLabel.setFont(font);
-		mainPanel.add(timerLabel, BorderLayout.NORTH);
+		topPanel.add(timerLabel, BorderLayout.SOUTH);
 
 		area = new TextArea();
 		area.setBackground(Color.BLACK);
