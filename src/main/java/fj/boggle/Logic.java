@@ -16,9 +16,9 @@ public class Logic {
 	private BoggleThread thread;
 
 	public void fillBoard() {
-		
-		//make random for the vowels
-		
+
+		// make random for the vowels
+
 		board = new String[4][4];
 		Random rand = new Random();
 
@@ -43,8 +43,12 @@ public class Logic {
 			System.out.println();
 		}
 	}
-	
-	public void startCode(String word){
+
+	public void startCode(String word) throws TooSmallWordException {
+
+		if (word.length() < 3) {
+			throw new TooSmallWordException();
+		}
 		checkWord(word);
 		callThread();
 	}
@@ -73,10 +77,10 @@ public class Logic {
 
 	public void checkAround(int i, int j, int index) {
 		// mark each cell as visited when push onto the stack
-		//figure out what to do with the "QU"
-		
+		// figure out what to do with the "QU"
+
 		int k = index;
-		
+
 		if (k < letters.length) {
 
 			if (inBounds(i + 1, j)
@@ -160,13 +164,13 @@ public class Logic {
 		}
 		return false;
 	}
-	
-	public void callThread(){
+
+	public void callThread() {
 		thread = new BoggleThread(word);
 		thread.start();
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws TooSmallWordException {
 		Logic log = new Logic();
 		log.fillBoard();
 		log.printBoard();

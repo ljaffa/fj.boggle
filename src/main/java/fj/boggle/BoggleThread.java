@@ -35,7 +35,7 @@ public class BoggleThread extends Thread {
 
 		}
 		
-		System.out.println(response.getBody());
+		//System.out.println(response.getBody());
 
 	}
 
