@@ -15,7 +15,7 @@ public class Logic {
 	private char[] letters;
 	private BoggleThread thread;
 
-	public void fillBoard() {
+	public String[][] fillBoard() {
 
 		// make random for the vowels
 
@@ -33,6 +33,7 @@ public class Logic {
 				board[i][j] = letter;
 			}
 		}
+		return board;
 	}
 
 	public void printBoard() {
@@ -92,14 +93,14 @@ public class Logic {
 			}
 			if (inBounds(i + 1, j - 1)
 
-			&& board[i + 1][j - 1].equalsIgnoreCase(String.valueOf(letters[k]))) {
+					&& board[i + 1][j - 1].equalsIgnoreCase(String.valueOf(letters[k]))) {
 				stack.push(board[i + 1][j - 1].charAt(0));
 				k++;
 				checkAround(i + 1, j - 1, k);
 			}
 			if (inBounds(i + 1, j + 1)
 
-			&& board[i + 1][j + 1].equalsIgnoreCase(String.valueOf(letters[k]))) {
+					&& board[i + 1][j + 1].equalsIgnoreCase(String.valueOf(letters[k]))) {
 				stack.push(board[i + 1][j + 1].charAt(0));
 				k++;
 				checkAround(i + 1, j + 1, k);
@@ -152,7 +153,7 @@ public class Logic {
 
 		}
 
-		return (word.equalsIgnoreCase(builder.toString()));
+		return word.equalsIgnoreCase(builder.toString());
 
 	}
 
