@@ -41,7 +41,10 @@ public class BoggleThread extends Thread {
 							"tUX0EvhpmFmshGEJpal40dLinQHip1nvCqWjsnERTWgoGmbBcK")
 					.header("Accept", "application/json").asJson();
 		} catch (UnirestException e) {
-			System.out.println("You did not enter a correct word.");
+			JOptionPane
+			.showMessageDialog(null,
+					"The word that was entered was not in the dictionary.");
+			text.setText("");
 			caught = true;
 
 		}
@@ -49,12 +52,8 @@ public class BoggleThread extends Thread {
 		//System.out.println(response.getBody());
 		if(!caught){
 		frame.appendWord(word);
-		}
-		else{
-			JOptionPane
-			.showMessageDialog(null,
-					"The word that was entered was not in the dictionary.");
-			text.setText("");
+		int size = word.length();
+		frame.addScore(size);
 		}
 		
 

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
@@ -37,8 +38,10 @@ public class StartGameGui extends JFrame {
 	container.add(panel, BorderLayout.CENTER);
 
 	button = new JButton("PLAY GAME!");
-	button.setPreferredSize(new Dimension(150, 40));
+	button.setPreferredSize(new Dimension(150, 70));
 	button.setBackground(Color.BLUE);
+	button.setForeground(Color.YELLOW);
+	button.setFont(new Font("Berlin Sans FB", Font.PLAIN, 35));
 
 	container.add(button, BorderLayout.SOUTH);
 	
@@ -53,7 +56,7 @@ public class StartGameGui extends JFrame {
 
 		public void actionPerformed(ActionEvent arg0) {
 
-			//dispose();
+			dispose();
 			new BoggleGui().setVisible(true);
 
 		}
