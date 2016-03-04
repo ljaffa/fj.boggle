@@ -44,7 +44,7 @@ public class Logic {
 				vowel = "U";
 				break;
 			}
-			vowels[vowelIndex] = vowel;
+			vowels[vowelIndex++] = vowel;
 
 			int randRow = rand.nextInt(4);
 			int randCol = rand.nextInt(4);
@@ -54,7 +54,7 @@ public class Logic {
 
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[i].length; j++) {
-				if (board[i][j].equalsIgnoreCase("")) {
+				if (board[i][j] == null) {
 					num = rand.nextInt(91 - 65) + 65;
 					if (num == 81) {
 						letter = "QU";
