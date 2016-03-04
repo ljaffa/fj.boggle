@@ -39,6 +39,7 @@ public class BoggleGui extends JFrame {
 	private JLabel[][] boggleBoard;
 	private BoggleThread thread;
 	private JPanel boardPanel;
+	private Font letterFont;
 
 	public BoggleGui() {
 		setTitle("BOGGLE");
@@ -58,7 +59,7 @@ public class BoggleGui extends JFrame {
 		boardPanel.setLayout(new GridLayout(4, 4));
 
 		// fillBoard();
-		Font letterFont = new Font("Calibri", Font.BOLD, 60);
+		letterFont = new Font("Calibri", Font.BOLD, 50);
 
 		boggle = log.fillBoard();
 		for (int row = 0; row < 4; row++) {
@@ -230,7 +231,6 @@ public class BoggleGui extends JFrame {
 
 	public void fillBoard() {
 
-		Font letterFont = new Font("Calibri", Font.BOLD, 60);
 
 		boggle = log.fillBoard();
 		for (int row = 0; row < 4; row++) {
