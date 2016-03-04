@@ -22,15 +22,47 @@ public class Logic {
 		board = new String[4][4];
 		Random rand = new Random();
 
+		String[] vowels = new String[4];
+		int vowelIndex = 0;
+		while (vowelIndex < 4) {
+			int vowelNum = rand.nextInt(5 - 1) + 1;
+			String vowel = null;
+			switch (vowelNum) {
+			case 1:
+				vowel = "A";
+				break;
+			case 2:
+				vowel = "E";
+				break;
+			case 3:
+				vowel = "I";
+				break;
+			case 4:
+				vowel = "O";
+				break;
+			case 5:
+				vowel = "U";
+				break;
+			}
+			vowels[vowelIndex] = vowel;
+
+			int randRow = rand.nextInt(4);
+			int randCol = rand.nextInt(4);
+
+			board[randRow][randCol] = vowel;
+		}
+
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[i].length; j++) {
-				num = rand.nextInt(91 - 65) + 65;
-				if (num == 81) {
-					letter = "QU";
-				} else {
-					letter = String.valueOf((char) num);
+				if (board[i][j].equalsIgnoreCase("")) {
+					num = rand.nextInt(91 - 65) + 65;
+					if (num == 81) {
+						letter = "QU";
+					} else {
+						letter = String.valueOf((char) num);
+					}
+					board[i][j] = letter;
 				}
-				board[i][j] = letter;
 			}
 		}
 		return board;
@@ -45,14 +77,12 @@ public class Logic {
 		}
 	}
 
-	
-
 	public boolean checkWord(String word) throws TooSmallWordException {
-		
+
 		if (word.length() < 3) {
 			throw new TooSmallWordException();
 		}
-		
+
 		this.word = word;
 		this.letters = word.toCharArray();
 		stack = new Stack<Character>();
@@ -165,8 +195,8 @@ public class Logic {
 	}
 
 	public void callThread() {
-		//thread = new BoggleThread(word);
-		//thread.start();
+		// thread = new BoggleThread(word);
+		// thread.start();
 	}
 
 	public static void main(String[] args) throws TooSmallWordException {
@@ -176,7 +206,7 @@ public class Logic {
 		System.out.println("Enter a word");
 		Scanner keyboard = new Scanner(System.in);
 		String word = keyboard.nextLine();
-	//	log.startCode(word);
+		// log.startCode(word);
 		System.out.println(log.checkWord(word));
 	}
 }

@@ -139,28 +139,28 @@ public class BoggleGui extends JFrame {
 		wordLabel.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				boolean used = false;
 				boolean valid = false;
-				
-				if(area.getText().contains(wordLabel.getText())){
+
+				if (area.getText().contains(wordLabel.getText())) {
 					JOptionPane.showMessageDialog(null,
 							"You already chose that word. Try again.");
 					wordLabel.setText("");
 					used = true;
-					
+
 				}
-				
-				if(!used){
-				try {
-					valid = log.checkWord(wordLabel.getText());
-				} catch (TooSmallWordException e) {
-					JOptionPane.showMessageDialog(null,
-							"The word is not at least 3 letters long.");
-					wordLabel.setText("");
+
+				if (!used) {
+					try {
+						valid = log.checkWord(wordLabel.getText());
+					} catch (TooSmallWordException e) {
+						JOptionPane.showMessageDialog(null,
+								"The word is not at least 3 letters long.");
+						wordLabel.setText("");
+					}
 				}
-				}
-				
+
 				if (valid) {
 
 					thread = new BoggleThread(wordLabel.getText(),
@@ -243,7 +243,7 @@ public class BoggleGui extends JFrame {
 				boggleBoard[row][col].setForeground(Color.BLUE);
 				boggleBoard[row][col].setBackground(Color.YELLOW);
 				boggleBoard[row][col].setOpaque(true);
-				boggleBoard[row][col].setBorder(new LineBorder(Color.BLUE, 2,
+				boggleBoard[row][col].setBorder(new LineBorder(Color.BLUE, 10,
 						true));
 			}
 		}
