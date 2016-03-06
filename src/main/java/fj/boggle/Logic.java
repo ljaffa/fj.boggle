@@ -95,6 +95,9 @@ public class Logic {
 								.valueOf(letters[k]))) {
 					stack.push(board[i][j].charAt(0));
 					k++;
+					
+					//not sure what to do with the checkAround because we never call it
+					//checkAround(i,j,k);
 
 				}
 			}
