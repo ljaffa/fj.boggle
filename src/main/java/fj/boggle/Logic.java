@@ -95,26 +95,28 @@ public class Logic {
 								.valueOf(letters[k]))) {
 					stack.push(board[i][j].charAt(0));
 					k++;
-					
-					//not sure what to do with the checkAround because we never call it
-					//checkAround(i,j,k);
+
+					// not sure what to do with the checkAround because we never
+					// call it
+					checkAround(i, j, k);
 
 				}
 			}
 		}
 
 		return foundWord();
-
 	}
 
-	public void checkAround(int i, int j, int index) {
+	public boolean checkAround(int i, int j, int index) {
 		// mark each cell as visited when push onto the stack
 		// figure out what to do with the "QU"
 
 		int k = index;
+		if (k >= letters.length) {
+			return true;
+		}
 
-		if (k < letters.length) {
-
+		else {
 			if (inBounds(i + 1, j)
 					&& board[i + 1][j].equalsIgnoreCase(String
 							.valueOf(letters[k]))) {
@@ -124,14 +126,14 @@ public class Logic {
 			}
 			if (inBounds(i + 1, j - 1)
 
-					&& board[i + 1][j - 1].equalsIgnoreCase(String.valueOf(letters[k]))) {
+			&& board[i + 1][j - 1].equalsIgnoreCase(String.valueOf(letters[k]))) {
 				stack.push(board[i + 1][j - 1].charAt(0));
 				k++;
 				checkAround(i + 1, j - 1, k);
 			}
 			if (inBounds(i + 1, j + 1)
 
-					&& board[i + 1][j + 1].equalsIgnoreCase(String.valueOf(letters[k]))) {
+			&& board[i + 1][j + 1].equalsIgnoreCase(String.valueOf(letters[k]))) {
 				stack.push(board[i + 1][j + 1].charAt(0));
 				k++;
 				checkAround(i + 1, j + 1, k);
@@ -171,7 +173,9 @@ public class Logic {
 				k++;
 				checkAround(i - 1, j + 1, k);
 			}
+			return false;
 		}
+		
 	}
 
 	public boolean foundWord() {
