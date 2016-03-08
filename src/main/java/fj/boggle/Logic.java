@@ -104,15 +104,10 @@ public class Logic {
 
 					found = checkAround(i, j, k);
 					break;
-
 				}
-
 			}
-
 			break;
-
 		}
-
 		return foundWord();
 	}
 
@@ -123,9 +118,7 @@ public class Logic {
 		int k = index;
 		if (k >= letters.length) {
 			return true;
-		}
-
-		else {
+		} else {
 			if (inBoard(i + 1, j, k)) {
 				stack.push(board[i + 1][j].charAt(0));
 				k++;
