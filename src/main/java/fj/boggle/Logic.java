@@ -124,6 +124,7 @@ public class Logic {
 					// if not, need to check in the board if another first
 					// letter exists
 					found = checkAround(i, j, k);
+
 					if (found) {
 						return foundWord();
 					} else {
@@ -132,13 +133,13 @@ public class Logic {
 					}
 
 				}
-
 			}
+
 
 			// break;
 
-		}
 
+		}
 		return foundWord();
 	}
 
@@ -149,10 +150,8 @@ public class Logic {
 		int k = index;
 		if (k >= letters.length) {
 			return true;
-		}
 
-		else {
-
+		} else {
 			if (inBoard(i + 1, j, k)) {
 
 				stack.push(board[i + 1][j].charAt(0));
