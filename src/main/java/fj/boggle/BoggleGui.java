@@ -9,6 +9,7 @@ import java.awt.GridLayout;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -40,6 +41,7 @@ public class BoggleGui extends JFrame {
 	private BoggleThread thread;
 	private JPanel boardPanel;
 	private Font letterFont;
+	private ArrayList<String> words;
 
 	public BoggleGui() {
 		setTitle("BOGGLE");
@@ -123,6 +125,8 @@ public class BoggleGui extends JFrame {
 		leftPanel.add(wordLabel, BorderLayout.SOUTH);
 		leftPanel.add(area, BorderLayout.CENTER);
 		leftPanel.add(shuffle, BorderLayout.NORTH);
+		
+		words = new ArrayList<String>();
 
 		shuffle.addActionListener(new ActionListener() {
 
@@ -143,8 +147,9 @@ public class BoggleGui extends JFrame {
 
 				boolean used = false;
 				boolean valid = false;
-
-				if (area.getText().contains(wordLabel.getText())) {
+				
+				
+				if (words.contains(wordLabel.getText())) {
 					JOptionPane.showMessageDialog(null,
 							"You already chose that word. Try again.");
 					wordLabel.setText("");
@@ -196,6 +201,7 @@ public class BoggleGui extends JFrame {
 	}
 
 	public void appendWord(String word) {
+		words.add(word);
 		area.append(word + "\n");
 		wordLabel.setText("");
 	}

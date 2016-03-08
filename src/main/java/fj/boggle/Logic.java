@@ -91,9 +91,27 @@ public class Logic {
 
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[i].length; j++) {
+
+				if (board[i][j].equalsIgnoreCase("QU")) {
+					if (letters[k] == 'q' || letters[k] == 'Q') {
+						stack.push('Q');
+						stack.push('U');
+						k += 2;
+
+						found = checkAround(i, j, k);
+						if (found) {
+							return foundWord();
+						} else {
+							k = 0;
+							stack.clear();
+						}
+
+					}
+				}
 				if (k < letters.length
 						&& board[i][j].equalsIgnoreCase(String
 								.valueOf(letters[k]))) {
+
 					stack.push(board[i][j].charAt(0));
 					k++;
 
@@ -102,14 +120,22 @@ public class Logic {
 
 					// checkAround(i, j, k);
 
+					// if the word is found, break out of the loop
+					// if not, need to check in the board if another first
+					// letter exists
 					found = checkAround(i, j, k);
-					break;
+					if (found) {
+						return foundWord();
+					} else {
+						k = 0;
+						stack.clear();
+					}
 
 				}
 
 			}
 
-			break;
+			// break;
 
 		}
 
@@ -126,46 +152,71 @@ public class Logic {
 		}
 
 		else {
+
 			if (inBoard(i + 1, j, k)) {
+
 				stack.push(board[i + 1][j].charAt(0));
 				k++;
 				return checkAround(i + 1, j, k);
+			} else {
+				k = hasQ(i + 1, j, k);
+
 			}
 			if (inBoard(i + 1, j - 1, k)) {
 				stack.push(board[i + 1][j - 1].charAt(0));
 				k++;
 				return checkAround(i + 1, j - 1, k);
+			} else {
+				k = hasQ(i + 1, j - 1, k);
+
 			}
 			if (inBoard(i + 1, j + 1, k)) {
 				stack.push(board[i + 1][j + 1].charAt(0));
 				k++;
 				return checkAround(i + 1, j + 1, k);
+			} else {
+				k = hasQ(i + 1, j + 1, k);
+
 			}
 			if (inBoard(i, j - 1, k)) {
 				stack.push(board[i][j - 1].charAt(0));
 				k++;
 				return checkAround(i, j - 1, k);
+			} else {
+				k = hasQ(i, j - 1, k);
+
 			}
 			if (inBoard(i, j + 1, k)) {
 				stack.push(board[i][j + 1].charAt(0));
 				k++;
 				return checkAround(i, j + 1, k);
+			} else {
+				k = hasQ(i, j + 1, k);
+
 			}
 			if (inBoard(i - 1, j - 1, k)) {
 				stack.push(board[i - 1][j - 1].charAt(0));
 				k++;
 				return checkAround(i - 1, j - 1, k);
+			} else {
+				k = hasQ(i - 1, j - 1, k);
+
 			}
 			if (inBoard(i - 1, j, k)) {
-
 				stack.push(board[i - 1][j].charAt(0));
 				k++;
 				return checkAround(i - 1, j, k);
+			} else {
+				k = hasQ(i - 1, j, k);
+
 			}
 			if (inBoard(i - 1, j + 1, k)) {
 				stack.push(board[i - 1][j + 1].charAt(0));
 				k++;
 				return checkAround(i - 1, j + 1, k);
+			} else {
+				k = hasQ(i - 1, j + 1, k);
+
 			}
 		}
 		return false;
@@ -195,9 +246,30 @@ public class Logic {
 	}
 
 	public boolean inBoard(int i, int j, int k) {
-		return inBounds(i, j)
-				&& board[i][j].equalsIgnoreCase(String.valueOf(letters[k]));
+		if (inBounds(i, j)) {
+			if (board[i][j].equalsIgnoreCase("QU")) {
+				return false;
+			} else {
+				return (board[i][j]
+						.equalsIgnoreCase(String.valueOf(letters[k])));
+			}
 
+		}
+
+		return false;
+
+	}
+
+	public int hasQ(int i, int j, int k) {
+
+		if (board[i][j].equalsIgnoreCase("QU")) {
+			if (letters[k] == 'q' || letters[k] == 'Q') {
+				stack.push('Q');
+				stack.push('U');
+				k += 2;
+			}
+		}
+		return k;
 	}
 
 	public void callThread() {
