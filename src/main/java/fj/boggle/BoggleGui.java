@@ -37,6 +37,7 @@ public class BoggleGui extends JFrame {
 	private JLabel score;
 	private int total = 0;// starts off as zero
 	private JButton shuffle;
+	private JButton rotate;
 	private JLabel[][] boggleBoard;
 	private BoggleThread thread;
 	private JPanel boardPanel;
@@ -122,9 +123,18 @@ public class BoggleGui extends JFrame {
 		shuffle.setForeground(Color.BLUE);
 		shuffle.setFont(new Font("Berlin Sans FB", Font.PLAIN, 35));
 
+		
+		rotate = new JButton("ROTATE");
+		rotate.setBackground(Color.ORANGE);
+		rotate.setForeground(Color.BLUE);
+		rotate.setFont(new Font("Berlin Sans FB", Font.PLAIN, 35));
+
+		
+
 		leftPanel.add(wordLabel, BorderLayout.SOUTH);
 		leftPanel.add(area, BorderLayout.CENTER);
 		leftPanel.add(shuffle, BorderLayout.NORTH);
+		leftPanel.add(rotate, BorderLayout.SOUTH);
 		
 		words = new ArrayList<String>();
 
@@ -141,6 +151,12 @@ public class BoggleGui extends JFrame {
 			}
 		});
 
+		rotate.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+					rotateMatrixRight();
+			}
+		});
 		wordLabel.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
@@ -195,6 +211,11 @@ public class BoggleGui extends JFrame {
 		if (interval == 1) {
 			timer.cancel();
 			JOptionPane.showMessageDialog(null, "Timer is up!!");
+			 int reply = JOptionPane.showConfirmDialog(null,
+	                    "Do you want to play again?", "PLAY AGAIN", JOptionPane.YES_NO_OPTION);
+			 if(reply == JOptionPane.YES_OPTION){
+				 restartGame();
+			 }
 			wordLabel.setEnabled(false);
 		}
 		return --interval;
@@ -253,6 +274,46 @@ public class BoggleGui extends JFrame {
 						true));
 			}
 		}
+	}
+	
+	public void rotateMatrixRight()
+	{
+	  
+	    for (int row = 0; row < 4; ++row) {
+	        for (int col = 0; col < 4; ++col) {
+	            boggle[row][col] = boggle[col][4-row-1];
+	            boggleBoard[row][col].setText(boggle[col][4-row-1]);
+	            /**
+	            boggleBoard[row][col].setText(boggle[row][col]);
+				boggleBoard[row][col].setHorizontalAlignment(JLabel.CENTER);
+				boggleBoard[row][col].setVerticalAlignment(JLabel.CENTER);
+				boggleBoard[row][col].setFont(letterFont);
+				boggleBoard[row][col].setForeground(Color.BLUE);
+				boggleBoard[row][col].setBackground(Color.YELLOW);
+				boggleBoard[row][col].setOpaque(true);
+				boggleBoard[row][col].setBorder(new LineBorder(Color.BLUE, 10,
+						true));
+	            **/
+	        }
+	    }
+	}
+
+
+	public String[][] rotateMatrixLeft()
+	{
+	     
+	    String[][] ret = new String[4][4];
+	    for (int i = 0; i < 4; ++i) {
+	        for (int j = 0; j < 4; ++j) {
+	            ret[i][j] = boggle[j][4 - i - 1];
+	        }
+	    }
+	    return ret;
+	}
+	
+	public void restartGame(){
+		dispose();
+		new BoggleGui().setVisible(true);
 	}
 
 	public static void main(String[] args) {
