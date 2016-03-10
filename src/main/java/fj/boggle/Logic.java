@@ -258,12 +258,14 @@ public class Logic {
 
 	public int hasQ(int i, int j, int k) {
 
+		if(inBounds(i,j)){
 		if (board[i][j].equalsIgnoreCase("QU")) {
 			if (letters[k] == 'q' || letters[k] == 'Q') {
 				stack.push('Q');
 				stack.push('U');
 				k += 2;
 			}
+		}
 		}
 		return k;
 	}
