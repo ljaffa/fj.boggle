@@ -135,9 +135,7 @@ public class Logic {
 				}
 			}
 
-
 			// break;
-
 
 		}
 		return foundWord();
@@ -249,8 +247,7 @@ public class Logic {
 			if (board[i][j].equalsIgnoreCase("QU")) {
 				return false;
 			} else {
-				return (board[i][j]
-						.equalsIgnoreCase(String.valueOf(letters[k])));
+				return board[i][j].equalsIgnoreCase(String.valueOf(letters[k]));
 			}
 
 		}
