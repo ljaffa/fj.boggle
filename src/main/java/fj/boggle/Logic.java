@@ -4,6 +4,8 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.Stack;
 
+import javax.swing.JOptionPane;
+
 public class Logic {
 
 	private String[][] board;
@@ -135,9 +137,10 @@ public class Logic {
 				}
 			}
 
-			// break;
 
 		}
+		
+		JOptionPane.showMessageDialog(null, "This word does not exist in the board.");
 		return foundWord();
 	}
 

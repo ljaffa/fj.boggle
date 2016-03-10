@@ -43,6 +43,7 @@ public class BoggleGui extends JFrame {
 	private JPanel boardPanel;
 	private Font letterFont;
 	private ArrayList<String> words;
+	private String[][] copy;
 
 	public BoggleGui() {
 		setTitle("BOGGLE");
@@ -51,8 +52,7 @@ public class BoggleGui extends JFrame {
 		setLocationRelativeTo(null);
 		setResizable(false);
 
-		this.setIconImage(new ImageIcon("./frameLogo.jpg").getImage()); 
-		
+		this.setIconImage(new ImageIcon("./frameLogo.jpg").getImage());
 		boggleBoard = new JLabel[4][4];
 		log = new Logic();
 
@@ -74,6 +74,8 @@ public class BoggleGui extends JFrame {
 
 			}
 		}
+		
+		copy = new String[4][4];
 
 		fillBoard();
 
@@ -284,23 +286,22 @@ public class BoggleGui extends JFrame {
 
 	public void rotateMatrixRight() {
 
-		for (int row = 0; row < 4; ++row) {
-			for (int col = 0; col < 4; ++col) {
-				boggle[row][col] = boggle[col][4 - row - 1];
-				boggleBoard[row][col].setText(boggle[col][4 - row - 1]);
-				/**
-				 * boggleBoard[row][col].setText(boggle[row][col]);
-				 * boggleBoard[row][col].setHorizontalAlignment(JLabel.CENTER);
-				 * boggleBoard[row][col].setVerticalAlignment(JLabel.CENTER);
-				 * boggleBoard[row][col].setFont(letterFont);
-				 * boggleBoard[row][col].setForeground(Color.BLUE);
-				 * boggleBoard[row][col].setBackground(Color.YELLOW);
-				 * boggleBoard[row][col].setOpaque(true);
-				 * boggleBoard[row][col].setBorder(new LineBorder(Color.BLUE,
-				 * 10, true));
-				 **/
+		
+		for (int r = 0; r < 4; r++) {
+			for (int c = 0; c < 4; c++) {
+				copy[c][4 - 1 - r] = boggle[r][c];
+
 			}
 		}
+		for (int i = 0; i < copy.length; i++) {
+			for (int j = 0; j < copy[i].length; j++) {
+				boggle[i][j] = copy[i][j];
+				boggleBoard[i][j].setText(copy[i][j]);
+				System.out.print(copy[i][j] + " ");
+			}
+			System.out.println();
+		}
+
 	}
 
 	public String[][] rotateMatrixLeft() {
