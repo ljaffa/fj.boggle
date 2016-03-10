@@ -51,6 +51,8 @@ public class BoggleGui extends JFrame {
 		setLocationRelativeTo(null);
 		setResizable(false);
 
+		this.setIconImage(new ImageIcon("./frameLogo.jpg").getImage()); 
+		
 		boggleBoard = new JLabel[4][4];
 		log = new Logic();
 

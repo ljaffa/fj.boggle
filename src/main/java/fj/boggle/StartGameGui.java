@@ -5,12 +5,15 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -51,6 +54,7 @@ public class StartGameGui extends JFrame {
 
 	AudioPlayer.player.start(music);
 	
+	this.setIconImage(new ImageIcon("./frameLogo.jpg").getImage());
 	
 	button.addActionListener(new ActionListener() {
 
