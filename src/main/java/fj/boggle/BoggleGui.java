@@ -74,7 +74,7 @@ public class BoggleGui extends JFrame {
 
 			}
 		}
-		
+
 		copy = new String[4][4];
 
 		fillBoard();
@@ -175,7 +175,8 @@ public class BoggleGui extends JFrame {
 
 				if (words.contains(wordLabel.getText())) {
 					JOptionPane.showMessageDialog(null,
-							"You already chose that word. Try again.");
+							"You already chose that word. Try again.","BOGGLE",
+							JOptionPane.PLAIN_MESSAGE, new ImageIcon("./boggleMessage.png"));
 					wordLabel.setText("");
 					used = true;
 
@@ -186,7 +187,8 @@ public class BoggleGui extends JFrame {
 						valid = log.checkWord(wordLabel.getText());
 					} catch (TooSmallWordException e) {
 						JOptionPane.showMessageDialog(null,
-								"The word is not at least 3 letters long.");
+								"The word is not at least 3 letters long.","BOGGLE",
+								JOptionPane.PLAIN_MESSAGE, new ImageIcon("./boggleMessage.png"));
 						wordLabel.setText("");
 					}
 				}
@@ -218,14 +220,23 @@ public class BoggleGui extends JFrame {
 	private int setInterval() {
 		if (interval == 1) {
 			timer.cancel();
-			JOptionPane.showMessageDialog(null, "Timer is up!!");
-			int reply = JOptionPane.showConfirmDialog(null,
-					"Do you want to play again?", "PLAY AGAIN",
-					JOptionPane.YES_NO_OPTION);
+			JOptionPane.showMessageDialog(null, "Timer is up!!", "Timer",
+					JOptionPane.PLAIN_MESSAGE, new ImageIcon("./timer.gif"));
+			wordLabel.setEnabled(false);
+			int reply = JOptionPane.showConfirmDialog(null, "Your score is "
+					+ total + ".\nDo you want to play again?", "PLAY AGAIN",
+					JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+					new ImageIcon("boggleMessage.png"));
 			if (reply == JOptionPane.YES_OPTION) {
 				restartGame();
+			} else {
+				JOptionPane.showMessageDialog(null,
+						"Good Bye! Have a great day!", "Good Bye",
+						JOptionPane.PLAIN_MESSAGE, new ImageIcon(
+								"./goodbye.png"));
+				dispose();
 			}
-			wordLabel.setEnabled(false);
+
 		}
 		return --interval;
 	}
@@ -286,7 +297,6 @@ public class BoggleGui extends JFrame {
 
 	public void rotateMatrixRight() {
 
-		
 		for (int r = 0; r < 4; r++) {
 			for (int c = 0; c < 4; c++) {
 				copy[c][4 - 1 - r] = boggle[r][c];

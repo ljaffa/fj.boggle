@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.Stack;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 public class Logic {
@@ -140,7 +141,8 @@ public class Logic {
 
 		}
 		
-		JOptionPane.showMessageDialog(null, "This word does not exist in the board.");
+		JOptionPane.showMessageDialog(null, "This word does not exist in the board.","BOGGLE",
+				JOptionPane.PLAIN_MESSAGE, new ImageIcon("./boggleMessage.png"));
 		return foundWord();
 	}
 
@@ -160,6 +162,7 @@ public class Logic {
 				return checkAround(i + 1, j, k);
 			} else {
 				k = hasQ(i + 1, j, k);
+				
 
 			}
 			if (inBoard(i + 1, j - 1, k)) {
@@ -250,7 +253,12 @@ public class Logic {
 			if (board[i][j].equalsIgnoreCase("QU")) {
 				return false;
 			} else {
+				if(k >= letters.length){
+					return false;
+				}
+				else{
 				return board[i][j].equalsIgnoreCase(String.valueOf(letters[k]));
+				}
 			}
 
 		}
