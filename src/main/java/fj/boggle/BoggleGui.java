@@ -26,7 +26,7 @@ import javax.swing.border.LineBorder;
 public class BoggleGui extends JFrame {
 
 	private Logic log;
-	private String[][] boggle;
+	private Cell[][] boggle;
 
 	private JLabel timerLabel;
 	private JLabel imageLabel;
@@ -58,7 +58,10 @@ public class BoggleGui extends JFrame {
 
 		this.setIconImage(new ImageIcon("./frameLogo.jpg").getImage());
 		boggleBoard = new JLabel[4][4];
-		log = new Logic();
+
+		wordLabel = new JTextField();
+
+		log = new Logic(wordLabel);
 
 		container = getContentPane();
 
@@ -87,7 +90,6 @@ public class BoggleGui extends JFrame {
 
 		imageLabel = new JLabel(new ImageIcon("boggle.png"));
 		timerLabel = new JLabel();
-		wordLabel = new JTextField();
 		score = new JLabel("Score: " + total);
 		area = new TextArea();
 		shuffle = new JButton("Shuffle Board!");
@@ -149,7 +151,7 @@ public class BoggleGui extends JFrame {
 
 		area.setBackground(Color.BLACK);
 		area.setForeground(Color.WHITE);
-		area.setFont(font);
+		area.setFont(new Font("Berlin Sans FB", Font.PLAIN, 30));
 		area.setEditable(false);
 		area.setPreferredSize(new Dimension(200, 50));
 
@@ -301,7 +303,7 @@ public class BoggleGui extends JFrame {
 		for (int row = 0; row < 4; row++) {
 			for (int col = 0; col < 4; col++) {
 
-				boggleBoard[row][col].setText(boggle[row][col]);
+				boggleBoard[row][col].setText(boggle[row][col].getValue());
 				boggleBoard[row][col].setHorizontalAlignment(JLabel.CENTER);
 				boggleBoard[row][col].setVerticalAlignment(JLabel.CENTER);
 				boggleBoard[row][col].setFont(letterFont);
@@ -318,14 +320,13 @@ public class BoggleGui extends JFrame {
 
 		for (int r = 0; r < 4; r++) {
 			for (int c = 0; c < 4; c++) {
-				copy[c][4 - 1 - r] = boggle[r][c];
+				copy[c][4 - 1 - r] = boggle[r][c].getValue();
 
 			}
 		}
 		for (int i = 0; i < copy.length; i++) {
 			for (int j = 0; j < copy[i].length; j++) {
-				boggle[i][j] = copy[i][j];
-				boggleBoard[i][j].setText(copy[i][j]);
+				boggle[i][j].setValue(copy[i][j]);
 				System.out.print(copy[i][j] + " ");
 			}
 			System.out.println();
@@ -338,7 +339,7 @@ public class BoggleGui extends JFrame {
 		String[][] ret = new String[4][4];
 		for (int i = 0; i < 4; ++i) {
 			for (int j = 0; j < 4; ++j) {
-				ret[i][j] = boggle[j][4 - i - 1];
+				ret[i][j] = boggle[j][4 - i - 1].getValue();
 			}
 		}
 		return ret;

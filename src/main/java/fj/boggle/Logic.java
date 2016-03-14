@@ -6,10 +6,11 @@ import java.util.Stack;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 public class Logic {
 
-	private String[][] board;
+	private Cell[][] board;
 	private int num;
 	private String letter;
 
@@ -17,12 +18,17 @@ public class Logic {
 	private Stack<Character> stack;
 	private char[] letters;
 	private BoggleThread thread;
+	private JTextField wordLabel;
 
-	public String[][] fillBoard() {
+	public Logic(JTextField wordLabel) {
+		this.wordLabel = wordLabel;
+	}
+
+	public Cell[][] fillBoard() {
 
 		// make random for the vowels
 
-		board = new String[4][4];
+		board = new Cell[4][4];
 		Random rand = new Random();
 
 		String[] vowels = new String[4];
@@ -51,8 +57,7 @@ public class Logic {
 
 			int randRow = rand.nextInt(4);
 			int randCol = rand.nextInt(4);
-
-			board[randRow][randCol] = vowel;
+			board[randRow][randCol] = new Cell(randRow, randCol, vowel);
 		}
 
 		for (int i = 0; i < board.length; i++) {
@@ -64,20 +69,11 @@ public class Logic {
 					} else {
 						letter = String.valueOf((char) num);
 					}
-					board[i][j] = letter;
+					board[i][j] = new Cell(i, j, letter);
 				}
 			}
 		}
 		return board;
-	}
-
-	public void printBoard() {
-		for (int i = 0; i < board.length; i++) {
-			for (int j = 0; j < board[i].length; j++) {
-				System.out.print(board[i][j] + " ");
-			}
-			System.out.println();
-		}
 	}
 
 	public boolean checkWord(String word) throws TooSmallWordException {
@@ -95,11 +91,14 @@ public class Logic {
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[i].length; j++) {
 
-				if (board[i][j].equalsIgnoreCase("QU")) {
+				if (board[i][j].getValue().equalsIgnoreCase("QU")) {
 					if (letters[k] == 'q' || letters[k] == 'Q') {
 						stack.push('Q');
 						stack.push('U');
 						k += 2;
+
+						board[i][j].setVisited(true);
+						board[i][j].setInWord(true);
 
 						found = checkAround(i, j, k);
 						if (found) {
@@ -112,11 +111,14 @@ public class Logic {
 					}
 				}
 				if (k < letters.length
-						&& board[i][j].equalsIgnoreCase(String
-								.valueOf(letters[k]))) {
+						&& board[i][j].getValue().equalsIgnoreCase(
+								String.valueOf(letters[k]))) {
 
-					stack.push(board[i][j].charAt(0));
+					stack.push(board[i][j].getValue().charAt(0));
+
 					k++;
+					board[i][j].setVisited(true);
+					board[i][j].setInWord(true);
 
 					// not sure what to do with the checkAround because we never
 					// call it
@@ -138,11 +140,14 @@ public class Logic {
 				}
 			}
 
-
 		}
-		
-		JOptionPane.showMessageDialog(null, "This word does not exist in the board.","BOGGLE",
-				JOptionPane.PLAIN_MESSAGE, new ImageIcon("./boggleMessage.png"));
+
+		JOptionPane
+				.showMessageDialog(null,
+						"This word does not exist in the board.", "BOGGLE",
+						JOptionPane.PLAIN_MESSAGE, new ImageIcon(
+								"./boggleMessage.png"));
+		wordLabel.setText("");
 		return foundWord();
 	}
 
@@ -157,16 +162,15 @@ public class Logic {
 		} else {
 			if (inBoard(i + 1, j, k)) {
 
-				stack.push(board[i + 1][j].charAt(0));
+				stack.push(board[i + 1][j].getValue().charAt(0));
 				k++;
 				return checkAround(i + 1, j, k);
 			} else {
 				k = hasQ(i + 1, j, k);
-				
 
 			}
 			if (inBoard(i + 1, j - 1, k)) {
-				stack.push(board[i + 1][j - 1].charAt(0));
+				stack.push(board[i + 1][j - 1].getValue().charAt(0));
 				k++;
 				return checkAround(i + 1, j - 1, k);
 			} else {
@@ -174,7 +178,7 @@ public class Logic {
 
 			}
 			if (inBoard(i + 1, j + 1, k)) {
-				stack.push(board[i + 1][j + 1].charAt(0));
+				stack.push(board[i + 1][j + 1].getValue().charAt(0));
 				k++;
 				return checkAround(i + 1, j + 1, k);
 			} else {
@@ -182,7 +186,7 @@ public class Logic {
 
 			}
 			if (inBoard(i, j - 1, k)) {
-				stack.push(board[i][j - 1].charAt(0));
+				stack.push(board[i][j - 1].getValue().charAt(0));
 				k++;
 				return checkAround(i, j - 1, k);
 			} else {
@@ -190,7 +194,7 @@ public class Logic {
 
 			}
 			if (inBoard(i, j + 1, k)) {
-				stack.push(board[i][j + 1].charAt(0));
+				stack.push(board[i][j + 1].getValue().charAt(0));
 				k++;
 				return checkAround(i, j + 1, k);
 			} else {
@@ -198,7 +202,7 @@ public class Logic {
 
 			}
 			if (inBoard(i - 1, j - 1, k)) {
-				stack.push(board[i - 1][j - 1].charAt(0));
+				stack.push(board[i - 1][j - 1].getValue().charAt(0));
 				k++;
 				return checkAround(i - 1, j - 1, k);
 			} else {
@@ -206,7 +210,7 @@ public class Logic {
 
 			}
 			if (inBoard(i - 1, j, k)) {
-				stack.push(board[i - 1][j].charAt(0));
+				stack.push(board[i - 1][j].getValue().charAt(0));
 				k++;
 				return checkAround(i - 1, j, k);
 			} else {
@@ -214,7 +218,7 @@ public class Logic {
 
 			}
 			if (inBoard(i - 1, j + 1, k)) {
-				stack.push(board[i - 1][j + 1].charAt(0));
+				stack.push(board[i - 1][j + 1].getValue().charAt(0));
 				k++;
 				return checkAround(i - 1, j + 1, k);
 			} else {
@@ -250,14 +254,14 @@ public class Logic {
 
 	public boolean inBoard(int i, int j, int k) {
 		if (inBounds(i, j)) {
-			if (board[i][j].equalsIgnoreCase("QU")) {
+			if (board[i][j].getValue().equalsIgnoreCase("QU") && !board[i][j].isVisited()) {
 				return false;
 			} else {
-				if(k >= letters.length){
+				if (k >= letters.length) {
 					return false;
-				}
-				else{
-				return board[i][j].equalsIgnoreCase(String.valueOf(letters[k]));
+				} else {
+					return board[i][j].getValue().equalsIgnoreCase(
+							String.valueOf(letters[k]));
 				}
 			}
 
@@ -269,31 +273,16 @@ public class Logic {
 
 	public int hasQ(int i, int j, int k) {
 
-		if(inBounds(i,j)){
-		if (board[i][j].equalsIgnoreCase("QU")) {
-			if (letters[k] == 'q' || letters[k] == 'Q') {
-				stack.push('Q');
-				stack.push('U');
-				k += 2;
+		if (inBounds(i, j)) {
+			if (board[i][j].getValue().equalsIgnoreCase("QU")) {
+				if (letters[k] == 'q' || letters[k] == 'Q') {
+					stack.push('Q');
+					stack.push('U');
+					k += 2;
+				}
 			}
-		}
 		}
 		return k;
 	}
 
-	public void callThread() {
-		// thread = new BoggleThread(word);
-		// thread.start();
-	}
-
-	public static void main(String[] args) throws TooSmallWordException {
-		Logic log = new Logic();
-		log.fillBoard();
-		log.printBoard();
-		System.out.println("Enter a word");
-		Scanner keyboard = new Scanner(System.in);
-		String word = keyboard.nextLine();
-		// log.startCode(word);
-		System.out.println(log.checkWord(word));
-	}
 }
