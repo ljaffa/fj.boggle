@@ -141,6 +141,13 @@ public class Logic {
 
 		}
 
+		// stack.pop();
+		// get coordinates of second item in the stack and check around that
+		// cell again
+		// only looking at cells that are not visited. if its false have to keep
+		// popping
+		// off the stack until you get to the first letter. the its really false
+		// - not in the board.
 		JOptionPane
 		.showMessageDialog(null,
 				"This word does not exist in the board.", "BOGGLE",
