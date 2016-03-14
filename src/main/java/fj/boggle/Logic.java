@@ -1,7 +1,6 @@
 package fj.boggle;
 
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Stack;
 
 import javax.swing.ImageIcon;
@@ -143,10 +142,10 @@ public class Logic {
 		}
 
 		JOptionPane
-				.showMessageDialog(null,
-						"This word does not exist in the board.", "BOGGLE",
-						JOptionPane.PLAIN_MESSAGE, new ImageIcon(
-								"./boggleMessage.png"));
+		.showMessageDialog(null,
+				"This word does not exist in the board.", "BOGGLE",
+				JOptionPane.PLAIN_MESSAGE, new ImageIcon(
+						"./boggleMessage.png"));
 		wordLabel.setText("");
 		return foundWord();
 	}
@@ -254,14 +253,20 @@ public class Logic {
 
 	public boolean inBoard(int i, int j, int k) {
 		if (inBounds(i, j)) {
-			if (board[i][j].getValue().equalsIgnoreCase("QU") && !board[i][j].isVisited()) {
+			if (board[i][j].getValue().equalsIgnoreCase("QU")
+					&& !board[i][j].isVisited()) {
 				return false;
 			} else {
 				if (k >= letters.length) {
 					return false;
 				} else {
-					return board[i][j].getValue().equalsIgnoreCase(
-							String.valueOf(letters[k]));
+					if (board[i][j].getValue().equalsIgnoreCase(
+							String.valueOf(letters[k]))
+							&& !board[i][j].isVisited()) {
+						return true;
+					} else {
+						return false;
+					}
 				}
 			}
 
