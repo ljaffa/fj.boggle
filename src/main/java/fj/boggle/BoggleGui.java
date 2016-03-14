@@ -44,6 +44,10 @@ public class BoggleGui extends JFrame {
 	private Font letterFont;
 	private ArrayList<String> words;
 	private String[][] copy;
+	private JPanel leftPanel;
+	private JPanel topPanel;
+	private JPanel rightPanel;
+	private Container container;
 
 	public BoggleGui() {
 		setTitle("BOGGLE");
@@ -56,12 +60,10 @@ public class BoggleGui extends JFrame {
 		boggleBoard = new JLabel[4][4];
 		log = new Logic();
 
-		Container container = getContentPane();
-		container.setLayout(new BorderLayout());
+		container = getContentPane();
 
 		// make a grid layout and connect it to the logic class
 		boardPanel = new JPanel();
-		boardPanel.setLayout(new GridLayout(4, 4));
 
 		// fillBoard();
 		letterFont = new Font("Calibri", Font.BOLD, 50);
@@ -79,74 +81,96 @@ public class BoggleGui extends JFrame {
 
 		fillBoard();
 
-		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new BorderLayout());
-		topPanel.setBackground(Color.BLUE);
+		topPanel = new JPanel();
 
-		JPanel leftPanel = new JPanel();
-		leftPanel.setLayout(new BorderLayout());
+		leftPanel = new JPanel();
 
-		JPanel rightPanel = new JPanel();
-		rightPanel.setLayout(new BorderLayout());
-
-		rightPanel.add(boardPanel, BorderLayout.CENTER);
-
-		// container.add(boardPanel, BorderLayout.CENTER);
-		container.add(rightPanel, BorderLayout.CENTER);
-		container.add(topPanel, BorderLayout.NORTH);
-		container.add(leftPanel, BorderLayout.WEST);
-
-		Font font = new Font("Berlin Sans FB", Font.PLAIN, 35);
+		rightPanel = new JPanel();
 
 		imageLabel = new JLabel(new ImageIcon("boggle.png"));
-		topPanel.add(imageLabel, BorderLayout.NORTH);
+
 		timerLabel = new JLabel();
-		timerLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
 		wordLabel = new JTextField();
-		wordLabel.setOpaque(true);
-		wordLabel.setBackground(Color.ORANGE);
-		wordLabel.setForeground(Color.BLUE);
-
-		wordLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		wordLabel.setPreferredSize(new Dimension(50, 40));
-		wordLabel.setFont(font);
-
-		timerLabel.setFont(font);
-		timerLabel.setForeground(Color.WHITE);
-		topPanel.add(timerLabel, BorderLayout.SOUTH);
 
 		score = new JLabel("Score: " + total);
-		score.setFont(font);
-		score.setForeground(Color.WHITE);
-		topPanel.add(score, BorderLayout.WEST);
 
 		area = new TextArea();
-		area.setBackground(Color.BLACK);
-		area.setForeground(Color.WHITE);
-		area.setFont(new Font("Berlin Sans FB", Font.PLAIN, 25));
-		area.setEditable(false);
-		area.setPreferredSize(new Dimension(200, 50));
 
 		shuffle = new JButton("Shuffle Board!");
-		shuffle.setBackground(Color.ORANGE);
-		shuffle.setForeground(Color.BLUE);
-		shuffle.setFont(new Font("Berlin Sans FB", Font.PLAIN, 35));
 
 		rotate = new JButton("ROTATE");
-		rotate.setBackground(Color.ORANGE);
-		rotate.setForeground(Color.BLUE);
-		rotate.setFont(new Font("Berlin Sans FB", Font.PLAIN, 35));
 
+		words = new ArrayList<String>();
+
+		format();
+		addToPanels();
+		addActionListeners();
+		addTimer();
+
+	}
+
+	private void addToPanels() {
+		topPanel.add(imageLabel, BorderLayout.NORTH);
+		topPanel.add(timerLabel, BorderLayout.SOUTH);
+		topPanel.add(score, BorderLayout.WEST);
+
+		rightPanel.add(boardPanel, BorderLayout.CENTER);
 		rightPanel.add(rotate, BorderLayout.SOUTH);
 
 		leftPanel.add(wordLabel, BorderLayout.SOUTH);
 		leftPanel.add(area, BorderLayout.CENTER);
 		leftPanel.add(shuffle, BorderLayout.NORTH);
-		// leftPanel.add(rotate, BorderLayout.WEST);
 
-		words = new ArrayList<String>();
+		container.add(rightPanel, BorderLayout.CENTER);
+		container.add(topPanel, BorderLayout.NORTH);
+		container.add(leftPanel, BorderLayout.WEST);
+	}
 
+	private void format() {
+		container.setLayout(new BorderLayout());
+
+		boardPanel.setLayout(new GridLayout(4, 4));
+
+		topPanel.setLayout(new BorderLayout());
+		topPanel.setBackground(Color.BLUE);
+
+		leftPanel.setLayout(new BorderLayout());
+
+		rightPanel.setLayout(new BorderLayout());
+
+		Font font = new Font("Berlin Sans FB", Font.PLAIN, 35);
+
+		timerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		timerLabel.setFont(font);
+		timerLabel.setForeground(Color.WHITE);
+
+		wordLabel.setOpaque(true);
+		wordLabel.setBackground(Color.ORANGE);
+		wordLabel.setForeground(Color.BLUE);
+		wordLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		wordLabel.setPreferredSize(new Dimension(50, 40));
+		wordLabel.setFont(font);
+
+		score.setFont(font);
+		score.setForeground(Color.WHITE);
+
+		area.setBackground(Color.BLACK);
+		area.setForeground(Color.WHITE);
+		area.setFont(font);
+		area.setEditable(false);
+		area.setPreferredSize(new Dimension(200, 50));
+
+		shuffle.setBackground(Color.ORANGE);
+		shuffle.setForeground(Color.BLUE);
+		shuffle.setFont(new Font("Berlin Sans FB", Font.PLAIN, 35));
+
+		rotate.setBackground(Color.ORANGE);
+		rotate.setForeground(Color.BLUE);
+		rotate.setFont(font);
+	}
+
+	private void addActionListeners() {
 		shuffle.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
@@ -175,8 +199,9 @@ public class BoggleGui extends JFrame {
 
 				if (words.contains(wordLabel.getText())) {
 					JOptionPane.showMessageDialog(null,
-							"You already chose that word. Try again.","BOGGLE",
-							JOptionPane.PLAIN_MESSAGE, new ImageIcon("./boggleMessage.png"));
+							"You already chose that word. Try again.",
+							"BOGGLE", JOptionPane.PLAIN_MESSAGE, new ImageIcon(
+									"./boggleMessage.png"));
 					wordLabel.setText("");
 					used = true;
 
@@ -187,8 +212,9 @@ public class BoggleGui extends JFrame {
 						valid = log.checkWord(wordLabel.getText());
 					} catch (TooSmallWordException e) {
 						JOptionPane.showMessageDialog(null,
-								"The word is not at least 3 letters long.","BOGGLE",
-								JOptionPane.PLAIN_MESSAGE, new ImageIcon("./boggleMessage.png"));
+								"The word is not at least 3 letters long.",
+								"BOGGLE", JOptionPane.PLAIN_MESSAGE,
+								new ImageIcon("./boggleMessage.png"));
 						wordLabel.setText("");
 					}
 				}
@@ -202,7 +228,9 @@ public class BoggleGui extends JFrame {
 				}
 			}
 		});
+	}
 
+	private void addTimer() {
 		int delay = 1000;
 		int period = 1000;
 		timer = new Timer();
@@ -214,7 +242,6 @@ public class BoggleGui extends JFrame {
 
 			}
 		}, delay, period);
-
 	}
 
 	private int setInterval() {
