@@ -1,5 +1,6 @@
 package fj.boggle;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -43,7 +44,8 @@ public class BoggleThread extends Thread {
 		} catch (UnirestException e) {
 			JOptionPane
 			.showMessageDialog(null,
-					"The word that was entered was not in the dictionary.");
+					"The word that was entered was not in the dictionary.","BOGGLE",
+					JOptionPane.PLAIN_MESSAGE, new ImageIcon("./boggleMessage.png"));
 			text.setText("");
 			caught = true;
 
