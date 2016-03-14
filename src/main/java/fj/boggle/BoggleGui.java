@@ -82,23 +82,15 @@ public class BoggleGui extends JFrame {
 		fillBoard();
 
 		topPanel = new JPanel();
-
 		leftPanel = new JPanel();
-
 		rightPanel = new JPanel();
 
 		imageLabel = new JLabel(new ImageIcon("boggle.png"));
-
 		timerLabel = new JLabel();
-
 		wordLabel = new JTextField();
-
 		score = new JLabel("Score: " + total);
-
 		area = new TextArea();
-
 		shuffle = new JButton("Shuffle Board!");
-
 		rotate = new JButton("ROTATE");
 
 		words = new ArrayList<String>();
