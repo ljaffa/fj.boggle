@@ -14,9 +14,8 @@ public class Logic {
 	private String letter;
 
 	private String word;
-	private Stack<Character> stack;
+	private Stack<Cell> stack;
 	private char[] letters;
-	private BoggleThread thread;
 	private JTextField wordLabel;
 
 	public Logic(JTextField wordLabel) {
@@ -83,7 +82,8 @@ public class Logic {
 
 		this.word = word;
 		this.letters = word.toCharArray();
-		stack = new Stack<Character>();
+		stack = new Stack<Cell>();
+
 		int k = 0;
 		boolean found = false;
 
@@ -92,12 +92,11 @@ public class Logic {
 
 				if (board[i][j].getValue().equalsIgnoreCase("QU")) {
 					if (letters[k] == 'q' || letters[k] == 'Q') {
-						stack.push('Q');
-						stack.push('U');
+						stack.push(board[i][j]);
+						// stack.push('U');
 						k += 2;
 
 						board[i][j].setVisited(true);
-						board[i][j].setInWord(true);
 
 						found = checkAround(i, j, k);
 						if (found) {
@@ -113,16 +112,10 @@ public class Logic {
 						&& board[i][j].getValue().equalsIgnoreCase(
 								String.valueOf(letters[k]))) {
 
-					stack.push(board[i][j].getValue().charAt(0));
+					stack.push(board[i][j]);
 
 					k++;
 					board[i][j].setVisited(true);
-					board[i][j].setInWord(true);
-
-					// not sure what to do with the checkAround because we never
-					// call it
-
-					// checkAround(i, j, k);
 
 					// if the word is found, break out of the loop
 					// if not, need to check in the board if another first
@@ -141,21 +134,32 @@ public class Logic {
 
 		}
 
-		// stack.pop();
-		// get coordinates of second item in the stack and check around that
-		// cell again
-		// only looking at cells that are not visited. if its false have to keep
-		// popping
-		// off the stack until you get to the first letter. the its really false
-		// - not in the board.
-		JOptionPane
-		.showMessageDialog(null,
-				"This word does not exist in the board.", "BOGGLE",
-				JOptionPane.PLAIN_MESSAGE, new ImageIcon(
-						"./boggleMessage.png"));
-		wordLabel.setText("");
-		return foundWord();
-	}
+		while (!stack.isEmpty()) {
+			Cell popCell = stack.pop();
+			found = checkAround(popCell.getRow(), popCell.getCol(), k - 1);
+
+			if (found) {
+				return foundWord();
+
+			}
+			
+			// stack.pop();
+			// get coordinates of second item in the stack and check around that
+			// cell again
+			// only looking at cells that are not visited. if its false have to
+			// keep
+			// popping
+			// off the stack until you get to the first letter. the its really
+			// false
+			// - not in the board.
+			JOptionPane.showMessageDialog(null,
+					"This word does not exist in the board.", "BOGGLE",
+					JOptionPane.PLAIN_MESSAGE, new ImageIcon(
+							"./boggleMessage.png"));
+			wordLabel.setText("");
+			return foundWord();
+		}
+	
 
 	public boolean checkAround(int i, int j, int index) {
 		// mark each cell as visited when push onto the stack
@@ -168,7 +172,7 @@ public class Logic {
 		} else {
 			if (inBoard(i + 1, j, k)) {
 
-				stack.push(board[i + 1][j].getValue().charAt(0));
+				stack.push(board[i + 1][j]);
 				k++;
 				return checkAround(i + 1, j, k);
 			} else {
@@ -176,7 +180,7 @@ public class Logic {
 
 			}
 			if (inBoard(i + 1, j - 1, k)) {
-				stack.push(board[i + 1][j - 1].getValue().charAt(0));
+				stack.push(board[i + 1][j - 1]);
 				k++;
 				return checkAround(i + 1, j - 1, k);
 			} else {
@@ -184,7 +188,7 @@ public class Logic {
 
 			}
 			if (inBoard(i + 1, j + 1, k)) {
-				stack.push(board[i + 1][j + 1].getValue().charAt(0));
+				stack.push(board[i + 1][j + 1]);
 				k++;
 				return checkAround(i + 1, j + 1, k);
 			} else {
@@ -192,7 +196,7 @@ public class Logic {
 
 			}
 			if (inBoard(i, j - 1, k)) {
-				stack.push(board[i][j - 1].getValue().charAt(0));
+				stack.push(board[i][j - 1]);
 				k++;
 				return checkAround(i, j - 1, k);
 			} else {
@@ -200,7 +204,7 @@ public class Logic {
 
 			}
 			if (inBoard(i, j + 1, k)) {
-				stack.push(board[i][j + 1].getValue().charAt(0));
+				stack.push(board[i][j + 1]);
 				k++;
 				return checkAround(i, j + 1, k);
 			} else {
@@ -208,7 +212,7 @@ public class Logic {
 
 			}
 			if (inBoard(i - 1, j - 1, k)) {
-				stack.push(board[i - 1][j - 1].getValue().charAt(0));
+				stack.push(board[i - 1][j - 1]);
 				k++;
 				return checkAround(i - 1, j - 1, k);
 			} else {
@@ -216,7 +220,7 @@ public class Logic {
 
 			}
 			if (inBoard(i - 1, j, k)) {
-				stack.push(board[i - 1][j].getValue().charAt(0));
+				stack.push(board[i - 1][j]);
 				k++;
 				return checkAround(i - 1, j, k);
 			} else {
@@ -224,7 +228,7 @@ public class Logic {
 
 			}
 			if (inBoard(i - 1, j + 1, k)) {
-				stack.push(board[i - 1][j + 1].getValue().charAt(0));
+				stack.push(board[i - 1][j + 1]);
 				k++;
 				return checkAround(i - 1, j + 1, k);
 			} else {
@@ -238,10 +242,10 @@ public class Logic {
 	public boolean foundWord() {
 		StringBuilder builder = new StringBuilder();
 		while (!stack.isEmpty()) {
-			char let = stack.firstElement();
+			Cell let = stack.firstElement();
 			stack.remove(0);
 
-			builder.append(let);
+			builder.append(let.getValue());
 
 		}
 
@@ -288,10 +292,8 @@ public class Logic {
 		if (inBounds(i, j)) {
 			if (board[i][j].getValue().equalsIgnoreCase("QU")) {
 				if (letters[k] == 'q' || letters[k] == 'Q') {
-					stack.push('Q');
-					stack.push('U');
+					stack.push(board[i][j]);
 					k += 2;
-					board[i][j].setInWord(true);
 					board[i][j].setVisited(true);
 				}
 			}
