@@ -291,6 +291,8 @@ public class Logic {
 					stack.push('Q');
 					stack.push('U');
 					k += 2;
+					board[i][j].setInWord(true);
+					board[i][j].setVisited(true);
 				}
 			}
 		}

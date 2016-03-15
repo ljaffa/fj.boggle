@@ -15,12 +15,14 @@ import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
 public class BoggleGui extends JFrame {
@@ -38,6 +40,7 @@ public class BoggleGui extends JFrame {
 	private int total = 0;// starts off as zero
 	private JButton shuffle;
 	private JButton rotate;
+	private JButton pauseButton;
 	private JLabel[][] boggleBoard;
 	private BoggleThread thread;
 	private JPanel boardPanel;
@@ -48,6 +51,8 @@ public class BoggleGui extends JFrame {
 	private JPanel topPanel;
 	private JPanel rightPanel;
 	private Container container;
+	private Boolean paused;
+	private ImageIcon boggleIcon;
 
 	public BoggleGui() {
 		setTitle("BOGGLE");
@@ -94,8 +99,13 @@ public class BoggleGui extends JFrame {
 		area = new TextArea();
 		shuffle = new JButton("Shuffle Board!");
 		rotate = new JButton("ROTATE");
+		pauseButton = new JButton("PAUSE");
+		
+		boggleIcon = new ImageIcon("./boggleMessage.png");
 
 		words = new ArrayList<String>();
+
+		paused = false; // default it to false
 
 		format();
 		addToPanels();
@@ -109,6 +119,7 @@ public class BoggleGui extends JFrame {
 		topPanel.add(timerLabel, BorderLayout.SOUTH);
 		topPanel.add(score, BorderLayout.WEST);
 
+		rightPanel.add(pauseButton, BorderLayout.NORTH);
 		rightPanel.add(boardPanel, BorderLayout.CENTER);
 		rightPanel.add(rotate, BorderLayout.SOUTH);
 
@@ -162,6 +173,10 @@ public class BoggleGui extends JFrame {
 		rotate.setBackground(Color.ORANGE);
 		rotate.setForeground(Color.BLUE);
 		rotate.setFont(font);
+
+		pauseButton.setBackground(Color.ORANGE);
+		pauseButton.setForeground(Color.BLUE);
+		pauseButton.setFont(new Font("Berlin Sans FB", Font.PLAIN, 30));
 	}
 
 	private void addActionListeners() {
@@ -184,6 +199,24 @@ public class BoggleGui extends JFrame {
 				rotateMatrixRight();
 			}
 		});
+
+		pauseButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+
+				paused = true;
+				UIManager.put("OptionPane.okButtonText", "Resume");
+				JOptionPane
+						.showMessageDialog(
+								null,
+								"The game is paused.\nClick resume to resume the game.",
+								"BOGGLE", JOptionPane.PLAIN_MESSAGE,
+								boggleIcon);
+
+				paused = false;
+
+			}
+		});
 		wordLabel.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
@@ -194,8 +227,7 @@ public class BoggleGui extends JFrame {
 				if (words.contains(wordLabel.getText())) {
 					JOptionPane.showMessageDialog(null,
 							"You already chose that word. Try again.",
-							"BOGGLE", JOptionPane.PLAIN_MESSAGE, new ImageIcon(
-									"./boggleMessage.png"));
+							"BOGGLE", JOptionPane.PLAIN_MESSAGE, boggleIcon);
 					wordLabel.setText("");
 					used = true;
 
@@ -207,8 +239,7 @@ public class BoggleGui extends JFrame {
 					} catch (TooSmallWordException e) {
 						JOptionPane.showMessageDialog(null,
 								"The word is not at least 3 letters long.",
-								"BOGGLE", JOptionPane.PLAIN_MESSAGE,
-								new ImageIcon("./boggleMessage.png"));
+								"BOGGLE", JOptionPane.PLAIN_MESSAGE,boggleIcon);
 						wordLabel.setText("");
 					}
 				}
@@ -232,7 +263,9 @@ public class BoggleGui extends JFrame {
 
 			@Override
 			public void run() {
-				timerLabel.setText("Timer: " + String.valueOf(setInterval()));
+				if (!paused)
+					timerLabel.setText("Timer: "
+							+ String.valueOf(setInterval()));
 
 			}
 		}, delay, period);
@@ -247,7 +280,7 @@ public class BoggleGui extends JFrame {
 			int reply = JOptionPane.showConfirmDialog(null, "Your score is "
 					+ total + ".\nDo you want to play again?", "PLAY AGAIN",
 					JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-					new ImageIcon("boggleMessage.png"));
+					boggleIcon);
 			if (reply == JOptionPane.YES_OPTION) {
 				restartGame();
 			} else {
