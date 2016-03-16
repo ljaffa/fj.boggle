@@ -15,7 +15,6 @@ import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -100,7 +99,7 @@ public class BoggleGui extends JFrame {
 		shuffle = new JButton("Shuffle Board!");
 		rotate = new JButton("ROTATE");
 		pauseButton = new JButton("PAUSE");
-		
+
 		boggleIcon = new ImageIcon("./boggleMessage.png");
 
 		words = new ArrayList<String>();
@@ -145,6 +144,7 @@ public class BoggleGui extends JFrame {
 		rightPanel.setLayout(new BorderLayout());
 
 		Font font = new Font("Berlin Sans FB", Font.PLAIN, 35);
+		Font fontTwo = new Font("Berlin Sans FB", Font.PLAIN, 30);
 
 		timerLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		timerLabel.setFont(font);
@@ -162,21 +162,33 @@ public class BoggleGui extends JFrame {
 
 		area.setBackground(Color.BLACK);
 		area.setForeground(Color.WHITE);
-		area.setFont(new Font("Berlin Sans FB", Font.PLAIN, 30));
+		area.setFont(fontTwo);
 		area.setEditable(false);
 		area.setPreferredSize(new Dimension(200, 50));
 
 		shuffle.setBackground(Color.ORANGE);
 		shuffle.setForeground(Color.BLUE);
-		shuffle.setFont(new Font("Berlin Sans FB", Font.PLAIN, 35));
+		shuffle.setFont(font);
+		shuffle.setBorder(null);
+		shuffle.setBorderPainted(false);
+		shuffle.setFocusPainted(false);
+		shuffle.setRolloverEnabled(false);
 
 		rotate.setBackground(Color.ORANGE);
 		rotate.setForeground(Color.BLUE);
 		rotate.setFont(font);
+		rotate.setBorder(null);
+		rotate.setBorderPainted(false);
+		rotate.setFocusPainted(false);
+		rotate.setRolloverEnabled(false);
 
 		pauseButton.setBackground(Color.ORANGE);
 		pauseButton.setForeground(Color.BLUE);
-		pauseButton.setFont(new Font("Berlin Sans FB", Font.PLAIN, 30));
+		pauseButton.setFont(fontTwo);
+		pauseButton.setBorder(null);
+		pauseButton.setBorderPainted(false);
+		pauseButton.setFocusPainted(false);
+		pauseButton.setRolloverEnabled(false);
 	}
 
 	private void addActionListeners() {
@@ -187,9 +199,9 @@ public class BoggleGui extends JFrame {
 				fillBoard();
 				total = 0;
 				score.setText("Score: " + total);
-
-				interval = 181;
 				area.setText("");
+				interval = 181;
+
 			}
 		});
 
@@ -210,8 +222,7 @@ public class BoggleGui extends JFrame {
 						.showMessageDialog(
 								null,
 								"The game is paused.\nClick resume to resume the game.",
-								"BOGGLE", JOptionPane.PLAIN_MESSAGE,
-								boggleIcon);
+								"BOGGLE", JOptionPane.PLAIN_MESSAGE, boggleIcon);
 
 				paused = false;
 
@@ -237,9 +248,12 @@ public class BoggleGui extends JFrame {
 					try {
 						valid = log.checkWord(wordLabel.getText());
 					} catch (TooSmallWordException e) {
-						JOptionPane.showMessageDialog(null,
-								"The word is not at least 3 letters long.",
-								"BOGGLE", JOptionPane.PLAIN_MESSAGE,boggleIcon);
+						JOptionPane
+								.showMessageDialog(
+										null,
+										"The word is not at least 3 letters long.",
+										"BOGGLE", JOptionPane.PLAIN_MESSAGE,
+										boggleIcon);
 						wordLabel.setText("");
 					}
 				}
@@ -272,7 +286,7 @@ public class BoggleGui extends JFrame {
 	}
 
 	private int setInterval() {
-		if (interval == 1) {
+		if (interval == 0) {
 			timer.cancel();
 			JOptionPane.showMessageDialog(null, "Timer is up!!", "Timer",
 					JOptionPane.PLAIN_MESSAGE, new ImageIcon("./timer.gif"));
@@ -359,23 +373,14 @@ public class BoggleGui extends JFrame {
 		}
 		for (int i = 0; i < copy.length; i++) {
 			for (int j = 0; j < copy[i].length; j++) {
-				boggle[i][j].setValue(copy[i][j]);
+				Cell cell = new Cell(i, j, copy[i][j]);
+				boggle[i][j] = cell;
+				boggleBoard[i][j].setText(copy[i][j]);
 				System.out.print(copy[i][j] + " ");
 			}
 			System.out.println();
 		}
 
-	}
-
-	public String[][] rotateMatrixLeft() {
-
-		String[][] ret = new String[4][4];
-		for (int i = 0; i < 4; ++i) {
-			for (int j = 0; j < 4; ++j) {
-				ret[i][j] = boggle[j][4 - i - 1].getValue();
-			}
-		}
-		return ret;
 	}
 
 	public void restartGame() {

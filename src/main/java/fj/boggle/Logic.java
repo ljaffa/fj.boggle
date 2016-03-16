@@ -93,7 +93,6 @@ public class Logic {
 				if (board[i][j].getValue().equalsIgnoreCase("QU")) {
 					if (letters[k] == 'q' || letters[k] == 'Q') {
 						stack.push(board[i][j]);
-						// stack.push('U');
 						k += 2;
 
 						board[i][j].setVisited(true);
@@ -117,49 +116,63 @@ public class Logic {
 					k++;
 					board[i][j].setVisited(true);
 
-					// if the word is found, break out of the loop
-					// if not, need to check in the board if another first
-					// letter exists
 					found = checkAround(i, j, k);
 
 					if (found) {
 						return foundWord();
 					} else {
-						k = 0;
-						stack.clear();
+
+						/*
+						 * if (!board[i][j].isVisited()) { while
+						 * (!stack.isEmpty()) { Cell popCell = stack.pop();
+						 * found = checkAround(popCell.getRow(),
+						 * popCell.getCol(), k - 1);
+						 * 
+						 * if (found) { return foundWord();
+						 * 
+						 * } } }
+						 */
+
+						k -= 1;
+						while (!stack.isEmpty()) {
+							Cell cell = stack.remove(0);
+							found = checkAround(cell.getRow(), cell.getCol(), k);
+							
+							if(found){
+								return foundWord();
+							}
+						}
+
+						// k = 0;
+						// stack.clear();
 					}
 
 				}
-			}
 
-		}
-
-		while (!stack.isEmpty()) {
-			Cell popCell = stack.pop();
-			found = checkAround(popCell.getRow(), popCell.getCol(), k - 1);
-
-			if (found) {
-				return foundWord();
+				// if the word is found, break out of the loop
+				// if not, need to check in the board if another first
+				// letter exists
 
 			}
-			
-			// stack.pop();
-			// get coordinates of second item in the stack and check around that
-			// cell again
-			// only looking at cells that are not visited. if its false have to
-			// keep
-			// popping
-			// off the stack until you get to the first letter. the its really
-			// false
-			// - not in the board.
-			JOptionPane.showMessageDialog(null,
-					"This word does not exist in the board.", "BOGGLE",
-					JOptionPane.PLAIN_MESSAGE, new ImageIcon(
-							"./boggleMessage.png"));
-			wordLabel.setText("");
-			return foundWord();
 		}
-	
+
+		// stack.pop();
+		// get coordinates of second item in the stack and check around that
+		// cell again
+		// only looking at cells that are not visited. if its false have to
+		// keep
+		// popping
+		// off the stack until you get to the first letter. the its really
+		// false
+		// - not in the board.
+		JOptionPane
+				.showMessageDialog(null,
+						"This word does not exist in the board.", "BOGGLE",
+						JOptionPane.PLAIN_MESSAGE, new ImageIcon(
+								"./boggleMessage.png"));
+		wordLabel.setText("");
+		return foundWord();
+	}
 
 	public boolean checkAround(int i, int j, int index) {
 		// mark each cell as visited when push onto the stack
