@@ -1,5 +1,6 @@
 package fj.boggle;
 
+import java.util.Queue;
 import java.util.Random;
 import java.util.Stack;
 
@@ -122,49 +123,15 @@ public class Logic {
 						return foundWord();
 					} else {
 
-						/*
-						 * if (!board[i][j].isVisited()) { while
-						 * (!stack.isEmpty()) { Cell popCell = stack.pop();
-						 * found = checkAround(popCell.getRow(),
-						 * popCell.getCol(), k - 1);
-						 * 
-						 * if (found) { return foundWord();
-						 * 
-						 * } } }
-						 */
-
-						k -= 1;
-						while (!stack.isEmpty()) {
-							Cell cell = stack.remove(0);
-							found = checkAround(cell.getRow(), cell.getCol(), k);
-							
-							if(found){
-								return foundWord();
-							}
-						}
-
-						// k = 0;
-						// stack.clear();
+						k = 0;
+						stack.clear();
 					}
 
 				}
 
-				// if the word is found, break out of the loop
-				// if not, need to check in the board if another first
-				// letter exists
-
 			}
 		}
 
-		// stack.pop();
-		// get coordinates of second item in the stack and check around that
-		// cell again
-		// only looking at cells that are not visited. if its false have to
-		// keep
-		// popping
-		// off the stack until you get to the first letter. the its really
-		// false
-		// - not in the board.
 		JOptionPane
 				.showMessageDialog(null,
 						"This word does not exist in the board.", "BOGGLE",
@@ -175,8 +142,6 @@ public class Logic {
 	}
 
 	public boolean checkAround(int i, int j, int index) {
-		// mark each cell as visited when push onto the stack
-		// figure out what to do with the "QU"
 
 		int k = index;
 		if (k >= letters.length) {
@@ -184,7 +149,6 @@ public class Logic {
 
 		} else {
 			if (inBoard(i + 1, j, k)) {
-
 				stack.push(board[i + 1][j]);
 				k++;
 				return checkAround(i + 1, j, k);
@@ -209,6 +173,7 @@ public class Logic {
 
 			}
 			if (inBoard(i, j - 1, k)) {
+
 				stack.push(board[i][j - 1]);
 				k++;
 				return checkAround(i, j - 1, k);
@@ -217,6 +182,7 @@ public class Logic {
 
 			}
 			if (inBoard(i, j + 1, k)) {
+
 				stack.push(board[i][j + 1]);
 				k++;
 				return checkAround(i, j + 1, k);
@@ -225,6 +191,7 @@ public class Logic {
 
 			}
 			if (inBoard(i - 1, j - 1, k)) {
+
 				stack.push(board[i - 1][j - 1]);
 				k++;
 				return checkAround(i - 1, j - 1, k);
@@ -233,6 +200,7 @@ public class Logic {
 
 			}
 			if (inBoard(i - 1, j, k)) {
+
 				stack.push(board[i - 1][j]);
 				k++;
 				return checkAround(i - 1, j, k);
@@ -241,6 +209,7 @@ public class Logic {
 
 			}
 			if (inBoard(i - 1, j + 1, k)) {
+
 				stack.push(board[i - 1][j + 1]);
 				k++;
 				return checkAround(i - 1, j + 1, k);
