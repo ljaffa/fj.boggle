@@ -1,8 +1,6 @@
 package fj.boggle;
 
-import java.util.Queue;
 import java.util.Random;
-import java.util.Stack;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -13,10 +11,6 @@ public class Logic {
 	private Cell[][] board;
 	private int num;
 	private String letter;
-
-	private String word;
-	private Stack<Cell> stack;
-	private char[] letters;
 	private JTextField wordLabel;
 
 	public Logic(JTextField wordLabel) {
@@ -81,55 +75,19 @@ public class Logic {
 			throw new TooSmallWordException();
 		}
 
-		this.word = word;
-		this.letters = word.toCharArray();
-		stack = new Stack<Cell>();
-
-		int k = 0;
+		int wordIndex = 0;
 		boolean found = false;
 
-		for (int i = 0; i < board.length; i++) {
-			for (int j = 0; j < board[i].length; j++) {
+		for (int x = 0; x < board.length; x++) {
+			for (int y = 0; y < board[x].length; y++) {
 
-				if (board[i][j].getValue().equalsIgnoreCase("QU")) {
-					if (letters[k] == 'q' || letters[k] == 'Q') {
-						stack.push(board[i][j]);
-						k += 2;
-
-						board[i][j].setVisited(true);
-
-						found = checkAround(i, j, k);
-						if (found) {
-							return foundWord();
-						} else {
-							k = 0;
-							stack.clear();
-						}
-
-					}
-				}
-				if (k < letters.length
-						&& board[i][j].getValue().equalsIgnoreCase(
-								String.valueOf(letters[k]))) {
-
-					stack.push(board[i][j]);
-
-					k++;
-					board[i][j].setVisited(true);
-
-					found = checkAround(i, j, k);
-
-					if (found) {
-						return foundWord();
-					} else {
-
-						k = 0;
-						stack.clear();
-					}
-
+				found = checkAround(x, y, word, wordIndex);
+				if (found) {
+					return true;
 				}
 
 			}
+
 		}
 
 		JOptionPane
@@ -138,100 +96,40 @@ public class Logic {
 						JOptionPane.PLAIN_MESSAGE, new ImageIcon(
 								"./boggleMessage.png"));
 		wordLabel.setText("");
-		return foundWord();
+		return found;
 	}
 
-	public boolean checkAround(int i, int j, int index) {
+	public boolean checkAround(int x, int y, String word, int index) {
+		boolean isQ = false;
+		boolean found = false;
+		if (inBounds(x, y)) {
 
-		int k = index;
-		if (k >= letters.length) {
-			return true;
-
-		} else {
-			if (inBoard(i + 1, j, k)) {
-				stack.push(board[i + 1][j]);
-				k++;
-				return checkAround(i + 1, j, k);
-			} else {
-				k = hasQ(i + 1, j, k);
-
+			if (index >= word.length()) {
+				return true; // we came to the end of the word
 			}
-			if (inBoard(i + 1, j - 1, k)) {
-				stack.push(board[i + 1][j - 1]);
-				k++;
-				return checkAround(i + 1, j - 1, k);
-			} else {
-				k = hasQ(i + 1, j - 1, k);
 
+			if (board[x][y].getValue().equalsIgnoreCase("QU")
+					&& (word.charAt(index) == 'q' || word.charAt(index) == 'Q')) {
+				index++;
+				isQ = true;
 			}
-			if (inBoard(i + 1, j + 1, k)) {
-				stack.push(board[i + 1][j + 1]);
-				k++;
-				return checkAround(i + 1, j + 1, k);
-			} else {
-				k = hasQ(i + 1, j + 1, k);
 
+			if (!String.valueOf(word.charAt(index)).equalsIgnoreCase(
+					board[x][y].getValue())
+					&& !isQ) {
+				return false;
 			}
-			if (inBoard(i, j - 1, k)) {
 
-				stack.push(board[i][j - 1]);
-				k++;
-				return checkAround(i, j - 1, k);
-			} else {
-				k = hasQ(i, j - 1, k);
-
-			}
-			if (inBoard(i, j + 1, k)) {
-
-				stack.push(board[i][j + 1]);
-				k++;
-				return checkAround(i, j + 1, k);
-			} else {
-				k = hasQ(i, j + 1, k);
-
-			}
-			if (inBoard(i - 1, j - 1, k)) {
-
-				stack.push(board[i - 1][j - 1]);
-				k++;
-				return checkAround(i - 1, j - 1, k);
-			} else {
-				k = hasQ(i - 1, j - 1, k);
-
-			}
-			if (inBoard(i - 1, j, k)) {
-
-				stack.push(board[i - 1][j]);
-				k++;
-				return checkAround(i - 1, j, k);
-			} else {
-				k = hasQ(i - 1, j, k);
-
-			}
-			if (inBoard(i - 1, j + 1, k)) {
-
-				stack.push(board[i - 1][j + 1]);
-				k++;
-				return checkAround(i - 1, j + 1, k);
-			} else {
-				k = hasQ(i - 1, j + 1, k);
-
-			}
+			found = checkAround(x + 1, y, word, index + 1)
+					|| checkAround(x, y + 1, word, index + 1)
+					|| checkAround(x - 1, y, word, index + 1)
+					|| checkAround(x, y - 1, word, index + 1)
+					|| checkAround(x + 1, y + 1, word, index + 1)
+					|| checkAround(x - 1, y - 1, word, index + 1)
+					|| checkAround(x - 1, y + 1, word, index + 1)
+					|| checkAround(x + 1, y - 1, word, index + 1);
 		}
-		return false;
-	}
-
-	public boolean foundWord() {
-		StringBuilder builder = new StringBuilder();
-		while (!stack.isEmpty()) {
-			Cell let = stack.firstElement();
-			stack.remove(0);
-
-			builder.append(let.getValue());
-
-		}
-
-		return word.equalsIgnoreCase(builder.toString());
+		return found;
 
 	}
 
@@ -242,45 +140,6 @@ public class Logic {
 			}
 		}
 		return false;
-	}
-
-	public boolean inBoard(int i, int j, int k) {
-		if (inBounds(i, j)) {
-			if (board[i][j].getValue().equalsIgnoreCase("QU")
-					&& !board[i][j].isVisited()) {
-				return false;
-			} else {
-				if (k >= letters.length) {
-					return false;
-				} else {
-					if (board[i][j].getValue().equalsIgnoreCase(
-							String.valueOf(letters[k]))
-							&& !board[i][j].isVisited()) {
-						return true;
-					} else {
-						return false;
-					}
-				}
-			}
-
-		}
-
-		return false;
-
-	}
-
-	public int hasQ(int i, int j, int k) {
-
-		if (inBounds(i, j)) {
-			if (board[i][j].getValue().equalsIgnoreCase("QU")) {
-				if (letters[k] == 'q' || letters[k] == 'Q') {
-					stack.push(board[i][j]);
-					k += 2;
-					board[i][j].setVisited(true);
-				}
-			}
-		}
-		return k;
 	}
 
 }

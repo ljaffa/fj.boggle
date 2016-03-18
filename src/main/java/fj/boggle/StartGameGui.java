@@ -21,53 +21,53 @@ import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
 public class StartGameGui extends JFrame {
-	
+
 	private JButton button;
 
-	public StartGameGui() throws IOException{
-		
-	
-	setTitle("BOGGLE");
-	setSize(600, 700);
-	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	setLocationRelativeTo(null);
-	setResizable(false);
+	public StartGameGui() throws IOException {
 
-	Container container = getContentPane();
-	container.setLayout(new BorderLayout());
-	
-	PlayGamePanel panel = new PlayGamePanel();
+		setTitle("BOGGLE");
+		setSize(600, 700);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setResizable(false);
 
-	container.add(panel, BorderLayout.CENTER);
+		Container container = getContentPane();
+		container.setLayout(new BorderLayout());
 
-	button = new JButton("PLAY GAME!");
-	button.setPreferredSize(new Dimension(150, 70));
-	button.setBackground(Color.BLUE);
-	button.setForeground(Color.YELLOW);
-	button.setFont(new Font("Berlin Sans FB", Font.PLAIN, 35));
+		PlayGamePanel panel = new PlayGamePanel();
 
-	container.add(button, BorderLayout.SOUTH);
-	
-	InputStream in = new FileInputStream("music.wav");
+		container.add(panel, BorderLayout.CENTER);
 
-	AudioStream music = new AudioStream(in);
+		button = new JButton("PLAY GAME!");
+		button.setPreferredSize(new Dimension(150, 70));
+		button.setBackground(Color.BLUE);
+		button.setForeground(Color.YELLOW);
+		button.setFont(new Font("Berlin Sans FB", Font.PLAIN, 35));
 
-	AudioPlayer.player.start(music);
-	
-	this.setIconImage(new ImageIcon("./frameLogo.jpg").getImage());
-	
-	button.addActionListener(new ActionListener() {
+		container.add(button, BorderLayout.SOUTH);
 
-		public void actionPerformed(ActionEvent arg0) {
+		InputStream in = new FileInputStream("music.wav");
 
-			dispose();
-			new BoggleGui().setVisible(true);
+		AudioStream music = new AudioStream(in);
 
-		}
-	});
+		AudioPlayer.player.start(music);
 
-}
-	public static void main(String[] args) throws IOException{
+		this.setIconImage(new ImageIcon("./frameLogo.jpg").getImage());
+
+		button.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+
+				dispose();
+				new BoggleGui().setVisible(true);
+
+			}
+		});
+
+	}
+
+	public static void main(String[] args) throws IOException {
 		new StartGameGui().setVisible(true);
 	}
 }

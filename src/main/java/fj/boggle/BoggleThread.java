@@ -22,7 +22,7 @@ public class BoggleThread extends Thread {
 		this.frame = frame;
 		this.word = word;
 		this.text = text;
-		this.caught = false; //initialize to false
+		this.caught = false; // initialize to false
 	}
 
 	@Override
@@ -42,28 +42,27 @@ public class BoggleThread extends Thread {
 							"tUX0EvhpmFmshGEJpal40dLinQHip1nvCqWjsnERTWgoGmbBcK")
 					.header("Accept", "application/json").asJson();
 		} catch (UnirestException e) {
-			JOptionPane
-			.showMessageDialog(null,
-					"The word that was entered was not in the dictionary.","BOGGLE",
-					JOptionPane.PLAIN_MESSAGE, new ImageIcon("./boggleMessage.png"));
+			JOptionPane.showMessageDialog(null,
+					"The word that was entered was not in the dictionary.",
+					"BOGGLE", JOptionPane.PLAIN_MESSAGE, new ImageIcon(
+							"./boggleMessage.png"));
 			text.setText("");
 			caught = true;
 
 		}
-		
-		//System.out.println(response.getBody());
-		if(!caught){
-		frame.appendWord(word);
-		int size = word.length();
-		frame.addScore(size);
+
+		// System.out.println(response.getBody());
+		if (!caught) {
+			frame.appendWord(word);
+			int size = word.length();
+			frame.addScore(size);
 		}
-		
 
 	}
 
 	public static void main(String[] args) {
 
-		//new BoggleThread("gjhkhky").start();
+		// new BoggleThread("gjhkhky").start();
 	}
 
 }

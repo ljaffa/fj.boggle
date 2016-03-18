@@ -267,6 +267,7 @@ public class BoggleGui extends JFrame {
 				}
 			}
 		});
+
 	}
 
 	private void addTimer() {
@@ -376,9 +377,7 @@ public class BoggleGui extends JFrame {
 				Cell cell = new Cell(i, j, copy[i][j]);
 				boggle[i][j] = cell;
 				boggleBoard[i][j].setText(copy[i][j]);
-				System.out.print(copy[i][j] + " ");
 			}
-			System.out.println();
 		}
 
 	}
