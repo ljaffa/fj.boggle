@@ -26,6 +26,10 @@ import javax.swing.border.LineBorder;
 
 public class BoggleGui extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Logic log;
 	private Cell[][] boggle;
 

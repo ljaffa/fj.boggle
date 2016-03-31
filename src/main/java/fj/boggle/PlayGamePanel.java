@@ -11,6 +11,10 @@ import javax.swing.JPanel;
 
 public class PlayGamePanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private BufferedImage image;
 
 	public PlayGamePanel() {
