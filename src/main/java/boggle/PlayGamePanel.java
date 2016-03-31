@@ -1,4 +1,4 @@
-package fj.boggle;
+package boggle;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics;

@@ -1,4 +1,4 @@
-package fj.boggle;
+package boggle;
 
 public class TooSmallWordException extends Exception {
 

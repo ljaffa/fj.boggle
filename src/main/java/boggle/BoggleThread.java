@@ -1,4 +1,4 @@
-package fj.boggle;
+package boggle;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;

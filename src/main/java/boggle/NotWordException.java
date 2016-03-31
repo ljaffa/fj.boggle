@@ -1,4 +1,4 @@
-package fj.boggle;
+package boggle;
 
 public class NotWordException extends Exception {
 
