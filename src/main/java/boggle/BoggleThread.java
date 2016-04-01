@@ -1,20 +1,25 @@
 package boggle;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import com.google.gson.Gson;
 
 public class BoggleThread extends Thread {
 
-	private String word;
-	private BoggleGui frame;
+	private final String word;
+	private final BoggleGui frame;
 	private boolean caught;
-	private JTextField text;
+	private final JTextField text;
 
 	public BoggleThread(String word, BoggleGui frame, JTextField text) {
 
@@ -27,30 +32,27 @@ public class BoggleThread extends Thread {
 	@Override
 	public void run() {
 
-		StringBuilder builder = new StringBuilder();
-		builder.append("https://wordsapiv1.p.mashape.com/words/");
-		builder.append(word);
-		builder.append("/definitions");
-
-		HttpResponse<JsonNode> response = null;
-
 		try {
-			response = Unirest
-					.get(builder.toString())
-					.header("X-Mashape-Key",
-							"tUX0EvhpmFmshGEJpal40dLinQHip1nvCqWjsnERTWgoGmbBcK")
-					.header("Accept", "application/json").asJson();
-		} catch (UnirestException e) {
-			JOptionPane.showMessageDialog(null,
-					"The word that was entered was not in the dictionary.",
-					"BOGGLE", JOptionPane.PLAIN_MESSAGE, new ImageIcon(
-							"./boggleMessage.png"));
-			text.setText("");
-			caught = true;
+			URL dictionaryURL = new URL("https://en.wiktionary.org/w/api.php?action=query&format=json&titles=" + word);
+			HttpURLConnection connection = (HttpURLConnection) dictionaryURL.openConnection();
+			InputStream input = connection.getInputStream();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 
+			Gson gson = new Gson();
+			WordExistsJson wordExists = gson.fromJson(reader, WordExistsJson.class);
+
+			if (wordExists.getQuery().getPages().containsKey(-1)) {
+				JOptionPane.showMessageDialog(null, "The word that was entered was not in the dictionary.", "BOGGLE",
+						JOptionPane.PLAIN_MESSAGE, new ImageIcon("./boggleMessage.png"));
+				caught = true;
+			}
+
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
-		// System.out.println(response.getBody());
 		if (!caught) {
 			frame.appendWord(word);
 			int size = word.length();
@@ -58,10 +60,4 @@ public class BoggleThread extends Thread {
 		}
 
 	}
-
-	public static void main(String[] args) {
-
-		// new BoggleThread("gjhkhky").start();
-	}
-
 }
