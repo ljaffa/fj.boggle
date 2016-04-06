@@ -69,7 +69,8 @@ public class BoggleGui extends JFrame {
 
 		wordLabel = new JTextField();
 
-		log = new Logic(wordLabel);
+		// log = new Logic(wordLabel);
+		log = new Logic();
 
 		container = getContentPane();
 
@@ -259,6 +260,13 @@ public class BoggleGui extends JFrame {
 					thread = new BoggleThread(wordLabel.getText(), BoggleGui.this, wordLabel);
 					thread.start();
 
+				}
+				else{
+					JOptionPane
+					.showMessageDialog(null,
+							"This word does not exist in the board.", "BOGGLE",
+							JOptionPane.PLAIN_MESSAGE, new ImageIcon(
+									"./boggleMessage.png"));
 				}
 			}
 		});
