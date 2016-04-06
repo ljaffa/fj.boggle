@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,14 +50,14 @@ public class StartGameGui extends JFrame {
 
 		container.add(button, BorderLayout.SOUTH);
 
-		InputStream in = new FileInputStream("music.wav");
+		InputStream in = new FileInputStream(new File(getClass().getResource("/music.wav").getPath()));
 
 		AudioStream music = new AudioStream(in);
 
 		AudioPlayer.player.start(music);
 
-		this.setIconImage(new ImageIcon("./frameLogo.jpg").getImage());
-
+		this.setIconImage(new ImageIcon(getClass().getResource(
+				"/frameLogo.jpg")).getImage());
 		button.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {

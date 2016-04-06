@@ -20,7 +20,7 @@ public class PlayGamePanel extends JPanel {
 	public PlayGamePanel() {
 
 		try {
-			image = ImageIO.read(new File("./boggleImage.jpg"));
+			image = ImageIO.read(getClass().getResourceAsStream("/boggleImage2.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

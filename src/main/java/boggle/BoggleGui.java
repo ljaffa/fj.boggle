@@ -64,7 +64,7 @@ public class BoggleGui extends JFrame {
 		setLocationRelativeTo(null);
 		setResizable(false);
 
-		this.setIconImage(new ImageIcon("./frameLogo.jpg").getImage());
+		this.setIconImage(new ImageIcon(getClass().getResource("/frameLogo.jpg")).getImage());
 		boggleBoard = new JLabel[4][4];
 
 		wordLabel = new JTextField();
@@ -96,7 +96,7 @@ public class BoggleGui extends JFrame {
 		leftPanel = new JPanel();
 		rightPanel = new JPanel();
 
-		imageLabel = new JLabel(new ImageIcon("boggle.png"));
+		imageLabel = new JLabel(new ImageIcon(getClass().getResource("/boggle.png")));
 		timerLabel = new JLabel();
 		score = new JLabel("Score: " + total);
 		area = new TextArea();
@@ -104,7 +104,7 @@ public class BoggleGui extends JFrame {
 		rotate = new JButton("ROTATE");
 		pauseButton = new JButton("PAUSE");
 
-		boggleIcon = new ImageIcon("./boggleMessage.png");
+		boggleIcon = new ImageIcon(getClass().getResource("/boggleMessage.png"));
 
 		words = new ArrayList<String>();
 
@@ -222,11 +222,8 @@ public class BoggleGui extends JFrame {
 
 				paused = true;
 				UIManager.put("OptionPane.okButtonText", "Resume");
-				JOptionPane
-						.showMessageDialog(
-								null,
-								"The game is paused.\nClick resume to resume the game.",
-								"BOGGLE", JOptionPane.PLAIN_MESSAGE, boggleIcon);
+				JOptionPane.showMessageDialog(null, "The game is paused.\nClick resume to resume the game.", "BOGGLE",
+						JOptionPane.PLAIN_MESSAGE, boggleIcon);
 
 				paused = false;
 
@@ -240,9 +237,8 @@ public class BoggleGui extends JFrame {
 				boolean valid = false;
 
 				if (words.contains(wordLabel.getText())) {
-					JOptionPane.showMessageDialog(null,
-							"You already chose that word. Try again.",
-							"BOGGLE", JOptionPane.PLAIN_MESSAGE, boggleIcon);
+					JOptionPane.showMessageDialog(null, "You already chose that word. Try again.", "BOGGLE",
+							JOptionPane.PLAIN_MESSAGE, boggleIcon);
 					wordLabel.setText("");
 					used = true;
 
@@ -252,20 +248,15 @@ public class BoggleGui extends JFrame {
 					try {
 						valid = log.checkWord(wordLabel.getText());
 					} catch (TooSmallWordException e) {
-						JOptionPane
-								.showMessageDialog(
-										null,
-										"The word is not at least 3 letters long.",
-										"BOGGLE", JOptionPane.PLAIN_MESSAGE,
-										boggleIcon);
+						JOptionPane.showMessageDialog(null, "The word is not at least 3 letters long.", "BOGGLE",
+								JOptionPane.PLAIN_MESSAGE, boggleIcon);
 						wordLabel.setText("");
 					}
 				}
 
 				if (valid) {
 
-					thread = new BoggleThread(wordLabel.getText(),
-							BoggleGui.this, wordLabel);
+					thread = new BoggleThread(wordLabel.getText(), BoggleGui.this, wordLabel);
 					thread.start();
 
 				}
@@ -283,8 +274,7 @@ public class BoggleGui extends JFrame {
 			@Override
 			public void run() {
 				if (!paused)
-					timerLabel.setText("Timer: "
-							+ String.valueOf(setInterval()));
+					timerLabel.setText("Timer: " + String.valueOf(setInterval()));
 
 			}
 		}, delay, period);
@@ -293,20 +283,16 @@ public class BoggleGui extends JFrame {
 	private int setInterval() {
 		if (interval == 0) {
 			timer.cancel();
-			JOptionPane.showMessageDialog(null, "Timer is up!!", "Timer",
-					JOptionPane.PLAIN_MESSAGE, new ImageIcon("./timer.gif"));
+			JOptionPane.showMessageDialog(null, "Timer is up!!", "Timer", JOptionPane.PLAIN_MESSAGE,
+					new ImageIcon("./timer.gif"));
 			wordLabel.setEnabled(false);
-			int reply = JOptionPane.showConfirmDialog(null, "Your score is "
-					+ total + ".\nDo you want to play again?", "PLAY AGAIN",
-					JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-					boggleIcon);
+			int reply = JOptionPane.showConfirmDialog(null, "Your score is " + total + ".\nDo you want to play again?",
+					"PLAY AGAIN", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, boggleIcon);
 			if (reply == JOptionPane.YES_OPTION) {
 				restartGame();
 			} else {
-				JOptionPane.showMessageDialog(null,
-						"Good Bye! Have a great day!", "Good Bye",
-						JOptionPane.PLAIN_MESSAGE, new ImageIcon(
-								"./goodbye.png"));
+				JOptionPane.showMessageDialog(null, "Good Bye! Have a great day!", "Good Bye",
+						JOptionPane.PLAIN_MESSAGE, new ImageIcon("./goodbye.png"));
 				dispose();
 			}
 
@@ -362,8 +348,7 @@ public class BoggleGui extends JFrame {
 				boggleBoard[row][col].setForeground(Color.BLUE);
 				boggleBoard[row][col].setBackground(Color.YELLOW);
 				boggleBoard[row][col].setOpaque(true);
-				boggleBoard[row][col].setBorder(new LineBorder(Color.BLUE, 10,
-						true));
+				boggleBoard[row][col].setBorder(new LineBorder(Color.BLUE, 10, true));
 			}
 		}
 	}
