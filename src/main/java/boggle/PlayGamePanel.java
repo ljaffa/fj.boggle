@@ -1,4 +1,4 @@
-package fj.boggle;
+package boggle;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics;
@@ -11,12 +11,16 @@ import javax.swing.JPanel;
 
 public class PlayGamePanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private BufferedImage image;
 
 	public PlayGamePanel() {
 
 		try {
-			image = ImageIO.read(new File("./boggleImage.jpg"));
+			image = ImageIO.read(getClass().getResourceAsStream("/boggleImage2.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

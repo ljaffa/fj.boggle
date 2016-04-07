@@ -1,4 +1,4 @@
-package fj.boggle;
+package boggle;
 
 import java.util.Random;
 
@@ -11,11 +11,12 @@ public class Logic {
 	private Cell[][] board;
 	private int num;
 	private String letter;
-	private JTextField wordLabel;
+	//private JTextField wordLabel;
 
-	public Logic(JTextField wordLabel) {
-		this.wordLabel = wordLabel;
-	}
+	//public Logic(JTextField wordLabel) {
+	//	this.wordLabel = wordLabel;
+	//}
+	
 
 	public Cell[][] fillBoard() {
 
@@ -85,17 +86,14 @@ public class Logic {
 				if (found) {
 					return true;
 				}
-
 			}
-
 		}
-
-		JOptionPane
-				.showMessageDialog(null,
-						"This word does not exist in the board.", "BOGGLE",
-						JOptionPane.PLAIN_MESSAGE, new ImageIcon(
-								"./boggleMessage.png"));
-		wordLabel.setText("");
+//		JOptionPane
+//				.showMessageDialog(null,
+//						"This word does not exist in the board.", "BOGGLE",
+//						JOptionPane.PLAIN_MESSAGE, new ImageIcon(
+//								"./boggleMessage.png"));
+		//wordLabel.setText("");
 		return found;
 	}
 
