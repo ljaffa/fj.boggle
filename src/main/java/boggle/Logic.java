@@ -86,11 +86,8 @@ public class Logic {
 				if (found) {
 					return true;
 				}
-
 			}
-
 		}
-
 //		JOptionPane
 //				.showMessageDialog(null,
 //						"This word does not exist in the board.", "BOGGLE",
