@@ -24,6 +24,8 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
+import com.sun.media.jfxmedia.events.PlayerEvent;
+
 public class BoggleGui extends JFrame {
 
 	/**
@@ -59,11 +61,11 @@ public class BoggleGui extends JFrame {
 	private ArrayList<String> words;
 	private String[][] copy;
 	private int interval = 181;
-	private int turn = 1, players = 2;
+	private int turn = 1, players = 1;
 	private int total1, total2, total = 0;// starts off as zero
 	private boolean paused;
 
-	public BoggleGui() {
+	public BoggleGui(int players) {
 		setTitle("BOGGLE");
 		setSize(600, 700);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -107,12 +109,13 @@ public class BoggleGui extends JFrame {
 		copy = new String[4][4];
 		paused = false; // default it to false
 		turn = 1;
-
+		this.players = players;
 		format();
 		addToPanels();
 		addActionListeners();
 		addTimer();
 		resetBoard();
+
 	}
 
 	private void addToPanels() {
@@ -283,6 +286,7 @@ public class BoggleGui extends JFrame {
 		timer = new Timer(1000, new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
+
 				if (!paused) {
 					timerLabel.setText("Timer: " + String.valueOf(checkTimer()));
 				}
@@ -301,10 +305,12 @@ public class BoggleGui extends JFrame {
 
 	public void endRound() {
 		timer.stop();
-		JOptionPane.showMessageDialog(null, "Timer is up!!", "Timer", JOptionPane.PLAIN_MESSAGE,
-				new ImageIcon("./timer.gif"));
+		// JOptionPane.showMessageDialog(null, "Timer is up!!", "Timer",
+		// JOptionPane.PLAIN_MESSAGE,new ImageIcon("./timer.gif"));
+		setStatus(2);
 		if (players == 2) {
 			if (turn == 1) {
+				setStatus(6);
 				turn = 2;
 				total1 = total;
 				total = 0;
@@ -318,18 +324,46 @@ public class BoggleGui extends JFrame {
 			} else {
 				// remeber to switch
 				total2 = total;
-				score2.setText("Score: " + total2);
 				score1.setText("Score: " + total1);
+				score2.setText("Score: " + total2);
 				if (total1 > total2) {
-					status.setText("Player 1 wins");
+					setStatus(3);
+
 				} else if (total1 < total2) {
-					status.setText("Player 2 wins");
+					setStatus(4);
 				} else {
-					status.setText("Tie game");
+					setStatus(5);
 				}
 			}
 		}
 		wordTextField.setEnabled(false);
+	}
+
+	private void setStatus(int num) {
+		switch (num) {
+		case 1:
+			status.setText("Good Luck!");
+			break;
+		case 2:
+			status.setText("Times Up!");
+			break;
+		case 3:
+			status.setText("Player 1 Wins!");
+			break;
+		case 4:
+			status.setText("Player 2 Wins!");
+			break;
+		case 5:
+			status.setText("Tie Game");
+			break;
+		case 6:
+			status.setText("Player 2's Turn");
+			break;
+		case 7:
+			status.setText("Player 1's Turn");
+			break;
+
+		}
 	}
 
 	// excluding bord
@@ -337,12 +371,16 @@ public class BoggleGui extends JFrame {
 		wordTextField.setEnabled(true);
 		wordListArea.setText("");
 		words.clear();
+		score1.setText("Score 1: 0");
 		if (players == 1) {
+			setStatus(1);
 			score2.setVisible(false);
+		} else {
+			score2.setText("Score 2: 0");
+			setStatus(7);
 		}
-		score2.setText("Score: 0");
-		score1.setText("Score: 0");
 		total = 0;
+		turn = 1;
 		interval = 10;
 		fillBoard();
 		timer.start();
@@ -379,10 +417,9 @@ public class BoggleGui extends JFrame {
 			total += 6;
 			break;
 		}
-		if (turn ==1){
-		score1.setText("Score 1: " + total);
-		}
-		else{
+		if (turn == 1) {
+			score1.setText("Score 1: " + total);
+		} else {
 			score2.setText("Score 2: " + total);
 		}
 	}
@@ -428,7 +465,7 @@ public class BoggleGui extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		new BoggleGui().setVisible(true);
+		new BoggleGui(1).setVisible(true);
 	}
 
 }

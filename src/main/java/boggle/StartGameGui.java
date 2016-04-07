@@ -48,9 +48,7 @@ public class StartGameGui extends JFrame {
 		container.setLayout(new BorderLayout());
 		optionsPanel = new JPanel();
 		optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
-		boggle = new BoggleGui();
-		
-
+		optionsPanel.setBackground(Color.blue);
 		container.add(panel, BorderLayout.CENTER);
 
 		singleButton = new JButton("Single Player");
@@ -58,26 +56,25 @@ public class StartGameGui extends JFrame {
 		singleButton.setBackground(Color.BLUE);
 		singleButton.setForeground(Color.YELLOW);
 		singleButton.setFont(new Font("Berlin Sans FB", Font.PLAIN, 35));
-		
+
 		doubleButton = new JButton("Double Player");
 		doubleButton.setPreferredSize(new Dimension(50, 40));
 		doubleButton.setBackground(Color.BLUE);
 		doubleButton.setForeground(Color.YELLOW);
 		doubleButton.setFont(new Font("Berlin Sans FB", Font.PLAIN, 35));
-		
+
 		rules = new JButton("Rules");
 		rules.setPreferredSize(new Dimension(50, 40));
 		rules.setBackground(Color.BLUE);
 		rules.setForeground(Color.YELLOW);
 		rules.setFont(new Font("Berlin Sans FB", Font.PLAIN, 35));
-		
-		
+
 		highScore = new JButton("High Scores");
 		highScore.setPreferredSize(new Dimension(50, 40));
 		highScore.setBackground(Color.BLUE);
 		highScore.setForeground(Color.YELLOW);
 		highScore.setFont(new Font("Berlin Sans FB", Font.PLAIN, 35));
-		
+
 		optionsPanel.add(singleButton);
 		optionsPanel.add(doubleButton);
 		optionsPanel.add(rules);
@@ -94,19 +91,22 @@ public class StartGameGui extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
+				boggle = new BoggleGui(1);
+				// boggle.setPlayer(1);
 				boggle.setVisible(true);
-				boggle.setPlayer(1);
+
 			}
 		});
-		
+
 		doubleButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				dispose();
 				setVisible(false);
+				boggle = new BoggleGui(2);
+				// boggle.setPlayer(2);
 				boggle.setVisible(true);
-				boggle.setPlayer(2);
+
 			}
 		});
 	}
