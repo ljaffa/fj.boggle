@@ -6,6 +6,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.KeyEventPostProcessor;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
@@ -36,19 +37,22 @@ import com.google.inject.Inject;
 
 public class BoggleFrame extends JFrame {
 
+	public static void main(String[] args) {
+		new BoggleFrame(1).setVisible(true);
+	}
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
 	private BoggleThread thread;
 	private final Logic logic;
 	private Cell[][] boggle;
 	private Timer timer;
+
 	private final Font letterFont;
 
 	private final Container container;
-
 	private final JPanel boardPanel;
 	private final JPanel leftPanel;
 	private final JPanel topPanel;
@@ -66,6 +70,7 @@ public class BoggleFrame extends JFrame {
 	private final JButton pauseButton;
 	private final ImageIcon boggleIcon;
 
+	private final JLabel correctLabel;
 	private final ArrayList<String> words;
 	private final String[][] copy;
 	private int interval = 181;
@@ -74,6 +79,10 @@ public class BoggleFrame extends JFrame {
 	private boolean paused;
 	private final Stack<Integer> rowsSelected;
 	private final Stack<Integer> columnsSelected;
+
+	private final ImageIcon blankImage;
+	private final ImageIcon checkImage;
+	private final ImageIcon xImage;
 
 	@Inject
 	public BoggleFrame(int players) {
@@ -103,9 +112,17 @@ public class BoggleFrame extends JFrame {
 		wordTextField = new JTextField();
 		rowsSelected = new Stack<Integer>();
 		columnsSelected = new Stack<Integer>();
-
+		correctLabel = new JLabel();
 		logic = new Logic();
 		boggle = logic.fillBoard();
+
+		blankImage = new ImageIcon(new ImageIcon(getClass().getResource("/blank.png")).getImage().getScaledInstance(60,
+				60, Image.SCALE_SMOOTH));
+		checkImage = new ImageIcon(new ImageIcon(getClass().getResource("/check.jpg")).getImage().getScaledInstance(60,
+				60, Image.SCALE_SMOOTH));
+		xImage = new ImageIcon(new ImageIcon(getClass().getResource("/x.jpg")).getImage().getScaledInstance(60, 60,
+				Image.SCALE_SMOOTH));
+
 		for (int row = 0; row < 4; row++) {
 			for (int col = 0; col < 4; col++) {
 				boggleBoard[row][col] = new JLabel();
@@ -137,6 +154,95 @@ public class BoggleFrame extends JFrame {
 
 	}
 
+	private void addActionListeners() {
+
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventPostProcessor(new KeyEventPostProcessor() {
+
+			public boolean postProcessKeyEvent(KeyEvent event) {
+				if (event.getKeyCode() == KeyEvent.VK_ENTER) {
+					checkWord();
+				}
+				return false;
+			}
+		});
+		shuffle.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				resetBoard();
+			}
+		});
+
+		rotate.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				rotateMatrixRight();
+			}
+		});
+
+		pauseButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+
+				paused = true;
+				UIManager.put("OptionPane.okButtonText", "Resume");
+				JOptionPane.showMessageDialog(null, "The game is paused.\nClick resume to resume the game.", "BOGGLE",
+						JOptionPane.PLAIN_MESSAGE, boggleIcon);
+
+				paused = false;
+
+			}
+		});
+		wordTextField.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				checkWord();
+			}
+		});
+	}
+
+	public void addScore(int amt) {
+
+		// it is only likely that the word will be from 3-8
+		switch (amt) {
+		case 3:
+			total += 1;
+			break;
+		case 4:
+			total += 2;
+			break;
+		case 5:
+			total += 3;
+			break;
+		case 6:
+			total += 4;
+			break;
+		case 7:
+			total += 5;
+			break;
+		case 8:
+			total += 6;
+			break;
+		}
+		if (turn == 1) {
+			score1.setText("Score 1: " + total);
+		} else {
+			score2.setText("Score 2: " + total);
+		}
+	}
+
+	private void addTimer() {
+		timer = new Timer(1000, new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+
+				if (!paused) {
+					timerLabel.setText("Timer: " + String.valueOf(checkTimer()));
+				}
+			}
+
+		});
+	}
+
 	private void addToPanels() {
 		scorePanel.add(score1);
 		scorePanel.add(score2);
@@ -150,13 +256,132 @@ public class BoggleFrame extends JFrame {
 		rightPanel.add(boardPanel, BorderLayout.CENTER);
 		rightPanel.add(rotate, BorderLayout.SOUTH);
 
-		leftPanel.add(wordTextField, BorderLayout.SOUTH);
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBackground(Color.WHITE);
+		panel.add(correctLabel);
+		panel.add(wordTextField);
+		leftPanel.add(panel, BorderLayout.SOUTH);
 		leftPanel.add(wordListArea, BorderLayout.CENTER);
 		leftPanel.add(shuffle, BorderLayout.NORTH);
 
 		container.add(rightPanel, BorderLayout.CENTER);
 		container.add(topPanel, BorderLayout.NORTH);
 		container.add(leftPanel, BorderLayout.WEST);
+	}
+
+	public void appendWord(String word) {
+		words.add(word);
+		wordListArea.append(word.toUpperCase() + "\n");
+		wordTextField.setText("");
+	}
+
+	private int checkTimer() {
+		if (interval == 0) {
+			endRound();
+			return 0;
+		}
+		return --interval;
+	}
+
+	public void checkWord() {
+		String word = wordTextField.getText().toLowerCase();
+		wordTextField.setText("");
+		resetCells();
+		if (word.length() == 0) {
+			return;
+		}
+		boolean valid = false;
+
+		if (words.contains(word)) {
+			setWordInvalid();
+			return;
+		}
+
+		try {
+			valid = logic.checkWord(word);
+		} catch (TooSmallWordException e) {
+			setWordInvalid();
+			return;
+		}
+
+		if (valid) {
+			thread = new BoggleThread(word, BoggleFrame.this);
+			thread.start();
+		} else {
+			setWordInvalid();
+		}
+	}
+
+	public void endRound() {
+		timer.stop();
+		setStatus(2);
+		if (players == 2) {
+			if (turn == 1) {
+				setStatus(6);
+				turn = 2;
+				total1 = total;
+				total = 0;
+				score1.setText("Score: ???");
+				wordListArea.setText("");
+				words.clear();
+				JOptionPane.showMessageDialog(null, "Press enter to begin", "Player 2", JOptionPane.PLAIN_MESSAGE);
+				interval = 181;
+				timer.start();
+				return;
+			} else {
+				total2 = total;
+				score1.setText("Score: " + total1);
+				score2.setText("Score: " + total2);
+				if (total1 > total2) {
+					setStatus(3);
+
+				} else if (total1 < total2) {
+					setStatus(4);
+				} else {
+					setStatus(5);
+				}
+			}
+		}
+		wordTextField.setEnabled(false);
+	}
+
+	public void fillBoard() {
+
+		boggle = logic.fillBoard();
+		for (int row = 0; row < 4; row++) {
+			for (int col = 0; col < 4; col++) {
+				boggleBoard[row][col].setText(boggle[row][col].getValue());
+				boggleBoard[row][col].setHorizontalAlignment(JLabel.CENTER);
+				boggleBoard[row][col].setVerticalAlignment(JLabel.CENTER);
+				boggleBoard[row][col].setFont(letterFont);
+				boggleBoard[row][col].setForeground(Color.BLUE);
+				boggleBoard[row][col].setBackground(Color.WHITE);
+				boggleBoard[row][col].setOpaque(true);
+				boggleBoard[row][col].setBorder(new LineBorder(Color.BLUE, 10, true));
+				final int i = row;
+				final int j = col;
+				boggleBoard[row][col].addMouseListener(new MouseListener() {
+
+					public void mouseClicked(MouseEvent arg0) {
+						wordTextField.setText(wordTextField.getText() + logic.getValueOfCell(i, j));
+						boggleBoard[i][j].setBorder(new LineBorder(Color.RED, 10, true));
+					}
+
+					public void mouseEntered(MouseEvent arg0) {
+					}
+
+					public void mouseExited(MouseEvent arg0) {
+					}
+
+					public void mousePressed(MouseEvent arg0) {
+					}
+
+					public void mouseReleased(MouseEvent arg0) {
+					}
+				});
+			}
+		}
 	}
 
 	private void format() {
@@ -179,6 +404,8 @@ public class BoggleFrame extends JFrame {
 		timerLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		timerLabel.setFont(font);
 		timerLabel.setForeground(Color.WHITE);
+
+		correctLabel.setIcon(blankImage);
 
 		wordTextField.setOpaque(true);
 		wordTextField.setBackground(new Color(204, 204, 255));
@@ -228,138 +455,53 @@ public class BoggleFrame extends JFrame {
 		pauseButton.setRolloverEnabled(false);
 	}
 
-	private void addActionListeners() {
-
-		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventPostProcessor(new KeyEventPostProcessor() {
-
-			public boolean postProcessKeyEvent(KeyEvent event) {
-				if (event.getKeyCode() == KeyEvent.VK_ENTER) {
-					checkWord();
-				}
-				return false;
-			}
-		});
-		shuffle.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent arg0) {
-				resetBoard();
-			}
-		});
-
-		rotate.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent arg0) {
-				rotateMatrixRight();
-			}
-		});
-
-		pauseButton.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent arg0) {
-
-				paused = true;
-				UIManager.put("OptionPane.okButtonText", "Resume");
-				JOptionPane.showMessageDialog(null, "The game is paused.\nClick resume to resume the game.", "BOGGLE",
-						JOptionPane.PLAIN_MESSAGE, boggleIcon);
-
-				paused = false;
-
-			}
-		});
-		wordTextField.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent arg0) {
-				checkWord();
-			}
-		});
-	}
-
-	public void checkWord() {
-		String word = wordTextField.getText().toLowerCase();
-		wordTextField.setText("");
-		resetCells();
-		if (word.length() == 0) {
-			return;
-		}
-		boolean valid = false;
-
-		if (words.contains(word)) {
-			JOptionPane.showMessageDialog(null, "You already chose that word. Try again.", "BOGGLE",
-					JOptionPane.PLAIN_MESSAGE, boggleIcon);
-			return;
-		}
-
-		try {
-			valid = logic.checkWord(word);
-		} catch (TooSmallWordException e) {
-			JOptionPane.showMessageDialog(null, "The word is not at least 3 letters long.", "BOGGLE",
-					JOptionPane.PLAIN_MESSAGE, boggleIcon);
-			return;
-		}
-
-		if (valid) {
-			thread = new BoggleThread(word, BoggleFrame.this, wordTextField);
-			thread.start();
-
+	public void resetBoard() {
+		wordTextField.setEnabled(true);
+		wordTextField.setText((""));
+		wordListArea.setText("");
+		words.clear();
+		score1.setText("Score 1: 0");
+		if (players == 1) {
+			setStatus(1);
+			score2.setVisible(false);
 		} else {
-			JOptionPane.showMessageDialog(null, "This word does not exist in the board.", "BOGGLE",
-					JOptionPane.PLAIN_MESSAGE, new ImageIcon("./boggleMessage.png"));
-
+			score2.setText("Score 2: 0");
+			setStatus(7);
 		}
+		total = 0;
+		turn = 1;
+		interval = 181;
+		fillBoard();
+		timer.start();
 	}
 
-	private void addTimer() {
-		timer = new Timer(1000, new ActionListener() {
-
-			public void actionPerformed(ActionEvent arg0) {
-
-				if (!paused) {
-					timerLabel.setText("Timer: " + String.valueOf(checkTimer()));
-				}
-			}
-
-		});
-	}
-
-	private int checkTimer() {
-		if (interval == 0) {
-			endRound();
-			return 0;
-		}
-		return --interval;
-	}
-
-	public void endRound() {
-		timer.stop();
-		setStatus(2);
-		if (players == 2) {
-			if (turn == 1) {
-				setStatus(6);
-				turn = 2;
-				total1 = total;
-				total = 0;
-				score1.setText("Score: ???");
-				wordListArea.setText("");
-				words.clear();
-				JOptionPane.showMessageDialog(null, "Press enter to begin", "Player 2", JOptionPane.PLAIN_MESSAGE);
-				interval = 181;
-				timer.start();
-				return;
-			} else {
-				total2 = total;
-				score1.setText("Score: " + total1);
-				score2.setText("Score: " + total2);
-				if (total1 > total2) {
-					setStatus(3);
-
-				} else if (total1 < total2) {
-					setStatus(4);
-				} else {
-					setStatus(5);
-				}
+	public void resetCells() {
+		for (JLabel[] element : boggleBoard) {
+			for (JLabel element2 : element) {
+				element2.setBorder(new LineBorder(Color.BLUE, 10, true));
 			}
 		}
-		wordTextField.setEnabled(false);
+	}
+
+	public void rotateMatrixRight() {
+
+		for (int r = 0; r < 4; r++) {
+			for (int c = 0; c < 4; c++) {
+				copy[c][4 - 1 - r] = boggle[r][c].getValue();
+
+			}
+		}
+		for (int i = 0; i < copy.length; i++) {
+			for (int j = 0; j < copy[i].length; j++) {
+				Cell cell = new Cell(i, j, copy[i][j]);
+				boggle[i][j] = cell;
+				boggleBoard[i][j].setText(copy[i][j]);
+			}
+		}
+	}
+
+	public void setPlayer(int players) {
+		this.players = players;
 	}
 
 	private void setStatus(int num) {
@@ -388,131 +530,24 @@ public class BoggleFrame extends JFrame {
 		}
 	}
 
-	public void resetCells() {
-		for (JLabel[] element : boggleBoard) {
-			for (JLabel element2 : element) {
-				element2.setBorder(new LineBorder(Color.BLUE, 10, true));
-			}
+	public void setWordInvalid() {
+		correctLabel.setIcon(xImage);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
+		correctLabel.setIcon(blankImage);
 	}
 
-	public void resetBoard() {
-		wordTextField.setEnabled(true);
-		wordTextField.setText((""));
-		wordListArea.setText("");
-		words.clear();
-		score1.setText("Score 1: 0");
-		if (players == 1) {
-			setStatus(1);
-			score2.setVisible(false);
-		} else {
-			score2.setText("Score 2: 0");
-			setStatus(7);
+	public void setWordValid() {
+		correctLabel.setIcon(checkImage);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-		total = 0;
-		turn = 1;
-		interval = 181;
-		fillBoard();
-		timer.start();
-	}
-
-	public void appendWord(String word) {
-		words.add(word);
-		wordListArea.append(word.toUpperCase() + "\n");
-		wordTextField.setText("");
-	}
-
-	public void addScore(int amt) {
-
-		// it is only likely that the word will be from 3-8
-		switch (amt) {
-		case 3:
-			total += 1;
-			break;
-		case 4:
-			total += 2;
-			break;
-		case 5:
-			total += 3;
-			break;
-		case 6:
-			total += 4;
-			break;
-		case 7:
-			total += 5;
-			break;
-		case 8:
-			total += 6;
-			break;
-		}
-		if (turn == 1) {
-			score1.setText("Score 1: " + total);
-		} else {
-			score2.setText("Score 2: " + total);
-		}
-	}
-
-	public void fillBoard() {
-
-		boggle = logic.fillBoard();
-		for (int row = 0; row < 4; row++) {
-			for (int col = 0; col < 4; col++) {
-				boggleBoard[row][col].setText(boggle[row][col].getValue());
-				boggleBoard[row][col].setHorizontalAlignment(JLabel.CENTER);
-				boggleBoard[row][col].setVerticalAlignment(JLabel.CENTER);
-				boggleBoard[row][col].setFont(letterFont);
-				boggleBoard[row][col].setForeground(Color.BLUE);
-				boggleBoard[row][col].setBackground(Color.WHITE);
-				boggleBoard[row][col].setOpaque(true);
-				boggleBoard[row][col].setBorder(new LineBorder(Color.BLUE, 10, true));
-				final int i = row;
-				final int j = col;
-				boggleBoard[row][col].addMouseListener(new MouseListener() {
-
-					public void mouseClicked(MouseEvent arg0) {
-						wordTextField.setText(wordTextField.getText() + logic.getValueOfCell(i, j));
-						boggleBoard[i][j].setBorder(new LineBorder(Color.RED, 10, true));
-					}
-
-					public void mouseEntered(MouseEvent arg0) {
-					}
-
-					public void mouseExited(MouseEvent arg0) {
-					}
-
-					public void mousePressed(MouseEvent arg0) {
-					}
-
-					public void mouseReleased(MouseEvent arg0) {
-					}
-				});
-			}
-		}
-	}
-
-	public void rotateMatrixRight() {
-
-		for (int r = 0; r < 4; r++) {
-			for (int c = 0; c < 4; c++) {
-				copy[c][4 - 1 - r] = boggle[r][c].getValue();
-
-			}
-		}
-		for (int i = 0; i < copy.length; i++) {
-			for (int j = 0; j < copy[i].length; j++) {
-				Cell cell = new Cell(i, j, copy[i][j]);
-				boggle[i][j] = cell;
-				boggleBoard[i][j].setText(copy[i][j]);
-			}
-		}
-	}
-
-	public void setPlayer(int players) {
-		this.players = players;
-	}
-
-	public static void main(String[] args) {
-		new BoggleFrame(1).setVisible(true);
+		correctLabel.setIcon(blankImage);
 	}
 
 }

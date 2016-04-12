@@ -88,7 +88,6 @@ public class StartGameGui extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
 				boggle = new BoggleFrame(1);
-				// boggle.setPlayer(1);
 				boggle.setVisible(true);
 
 			}
