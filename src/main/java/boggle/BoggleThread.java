@@ -17,16 +17,16 @@ import com.google.gson.Gson;
 public class BoggleThread extends Thread {
 
 	private final String word;
-	private final BoggleGui frame;
+	private final BoggleFrame frame;
 	private boolean caught;
 	private final JTextField text;
 
-	public BoggleThread(String word, BoggleGui frame, JTextField text) {
+	public BoggleThread(String word, BoggleFrame frame, JTextField text) {
 
 		this.frame = frame;
 		this.word = word;
 		this.text = text;
-		this.caught = false; // initialize to false
+		this.caught = false;
 	}
 
 	@Override
