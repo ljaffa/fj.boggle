@@ -7,8 +7,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,7 +16,6 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import sun.audio.AudioPlayer;
@@ -30,10 +27,10 @@ public class StartGameGui extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JButton singleButton, doubleButton, rules, highScore;
-	private JPanel optionsPanel;
+	private final JButton singleButton, doubleButton, rules, highScore;
+	private final JPanel optionsPanel;
 	private int player;
-	private BoggleGui boggle;
+	private BoggleFrame boggle;
 
 	public StartGameGui() throws IOException {
 
@@ -88,11 +85,9 @@ public class StartGameGui extends JFrame {
 
 		singleButton.addActionListener(new ActionListener() {
 
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
-				boggle = new BoggleGui(1);
-				// boggle.setPlayer(1);
+				boggle = new BoggleFrame(1);
 				boggle.setVisible(true);
 
 			}
@@ -100,10 +95,9 @@ public class StartGameGui extends JFrame {
 
 		doubleButton.addActionListener(new ActionListener() {
 
-			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
-				boggle = new BoggleGui(2);
+				boggle = new BoggleFrame(2);
 				// boggle.setPlayer(2);
 				boggle.setVisible(true);
 
