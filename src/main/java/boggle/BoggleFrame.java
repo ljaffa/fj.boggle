@@ -17,7 +17,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-import java.util.Stack;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -30,7 +29,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
-import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
 import com.google.inject.Inject;
@@ -65,8 +63,8 @@ public class BoggleFrame extends JFrame {
 	private final JLabel status;
 	private final JLabel imageLabel;
 	private final JLabel score1, score2;
-	private final JButton shuffle;
-	private final JButton rotate;
+	private final JButton resetBoard;
+	private final JButton rotateBoard;
 	private final JButton pauseButton;
 	private final ImageIcon boggleIcon;
 
@@ -77,12 +75,11 @@ public class BoggleFrame extends JFrame {
 	private int turn = 1, players = 1;
 	private int total1, total2, total = 0;
 	private boolean paused;
-	private final Stack<Integer> rowsSelected;
-	private final Stack<Integer> columnsSelected;
 
 	private final ImageIcon blankImage;
 	private final ImageIcon checkImage;
 	private final ImageIcon xImage;
+	private final JLabel pauseLabel;
 
 	@Inject
 	public BoggleFrame(int players) {
@@ -100,8 +97,8 @@ public class BoggleFrame extends JFrame {
 		rightPanel = new JPanel();
 		scorePanel = new JPanel();
 		wordListArea = new JTextArea();
-		shuffle = new JButton("Reset Board!");
-		rotate = new JButton("ROTATE");
+		resetBoard = new JButton("Reset Board!");
+		rotateBoard = new JButton("ROTATE");
 		pauseButton = new JButton("PAUSE");
 		imageLabel = new JLabel(new ImageIcon(getClass().getResource("/boggle.png")));
 		timerLabel = new JLabel();
@@ -110,9 +107,8 @@ public class BoggleFrame extends JFrame {
 		status = new JLabel();
 		boggleBoard = new JLabel[4][4];
 		wordTextField = new JTextField();
-		rowsSelected = new Stack<Integer>();
-		columnsSelected = new Stack<Integer>();
 		correctLabel = new JLabel();
+		pauseLabel = new JLabel("GAME PAUSED", JLabel.CENTER);
 		logic = new Logic();
 		boggle = logic.fillBoard();
 
@@ -131,13 +127,6 @@ public class BoggleFrame extends JFrame {
 			}
 		}
 
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowOpened(WindowEvent e) {
-				wordTextField.requestFocus();
-			}
-		});
-
 		letterFont = new Font("Calibri", Font.BOLD, 50);
 		boggleIcon = new ImageIcon(getClass().getResource("/boggleMessage.png"));
 
@@ -151,10 +140,20 @@ public class BoggleFrame extends JFrame {
 		addActionListeners();
 		addTimer();
 		resetBoard();
+	}
 
+	private void setWindowListener() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowOpened(WindowEvent e) {
+				wordTextField.requestFocus();
+			}
+		});
 	}
 
 	private void addActionListeners() {
+
+		setWindowListener();
 
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventPostProcessor(new KeyEventPostProcessor() {
 
@@ -165,14 +164,14 @@ public class BoggleFrame extends JFrame {
 				return false;
 			}
 		});
-		shuffle.addActionListener(new ActionListener() {
+		resetBoard.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
 				resetBoard();
 			}
 		});
 
-		rotate.addActionListener(new ActionListener() {
+		rotateBoard.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
 				rotateMatrixRight();
@@ -183,13 +182,28 @@ public class BoggleFrame extends JFrame {
 
 			public void actionPerformed(ActionEvent arg0) {
 
-				paused = true;
-				UIManager.put("OptionPane.okButtonText", "Resume");
-				JOptionPane.showMessageDialog(null, "The game is paused.\nClick resume to resume the game.", "BOGGLE",
-						JOptionPane.PLAIN_MESSAGE, boggleIcon);
-
-				paused = false;
-
+				if (paused) {
+					rightPanel.remove(pauseLabel);
+					rightPanel.add(boardPanel, BorderLayout.CENTER);
+					pauseButton.setText("PAUSE");
+					paused = false;
+					resetBoard.setEnabled(true);
+					wordTextField.setEnabled(true);
+					rotateBoard.setEnabled(true);
+					repaint();
+					return;
+				}
+				if (!paused) {
+					rightPanel.remove(boardPanel);
+					rightPanel.add(pauseLabel, BorderLayout.CENTER);
+					pauseButton.setText("RESUME");
+					paused = true;
+					resetBoard.setEnabled(false);
+					wordTextField.setEnabled(false);
+					rotateBoard.setEnabled(false);
+					repaint();
+					return;
+				}
 			}
 		});
 		wordTextField.addActionListener(new ActionListener() {
@@ -254,7 +268,7 @@ public class BoggleFrame extends JFrame {
 
 		rightPanel.add(pauseButton, BorderLayout.NORTH);
 		rightPanel.add(boardPanel, BorderLayout.CENTER);
-		rightPanel.add(rotate, BorderLayout.SOUTH);
+		rightPanel.add(rotateBoard, BorderLayout.SOUTH);
 
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -263,7 +277,7 @@ public class BoggleFrame extends JFrame {
 		panel.add(wordTextField);
 		leftPanel.add(panel, BorderLayout.SOUTH);
 		leftPanel.add(wordListArea, BorderLayout.CENTER);
-		leftPanel.add(shuffle, BorderLayout.NORTH);
+		leftPanel.add(resetBoard, BorderLayout.NORTH);
 
 		container.add(rightPanel, BorderLayout.CENTER);
 		container.add(topPanel, BorderLayout.NORTH);
@@ -430,21 +444,21 @@ public class BoggleFrame extends JFrame {
 		wordListArea.setEditable(false);
 		wordListArea.setPreferredSize(new Dimension(200, 50));
 
-		shuffle.setBackground(new Color(204, 204, 255));
-		shuffle.setForeground(Color.BLUE);
-		shuffle.setFont(font);
-		shuffle.setBorder(null);
-		shuffle.setBorderPainted(false);
-		shuffle.setFocusPainted(false);
-		shuffle.setRolloverEnabled(false);
+		resetBoard.setBackground(new Color(204, 204, 255));
+		resetBoard.setForeground(Color.BLUE);
+		resetBoard.setFont(font);
+		resetBoard.setBorder(null);
+		resetBoard.setBorderPainted(false);
+		resetBoard.setFocusPainted(false);
+		resetBoard.setRolloverEnabled(false);
 
-		rotate.setBackground(new Color(204, 204, 255));
-		rotate.setForeground(Color.BLUE);
-		rotate.setFont(font);
-		rotate.setBorder(null);
-		rotate.setBorderPainted(false);
-		rotate.setFocusPainted(false);
-		rotate.setRolloverEnabled(false);
+		rotateBoard.setBackground(new Color(204, 204, 255));
+		rotateBoard.setForeground(Color.BLUE);
+		rotateBoard.setFont(font);
+		rotateBoard.setBorder(null);
+		rotateBoard.setBorderPainted(false);
+		rotateBoard.setFocusPainted(false);
+		rotateBoard.setRolloverEnabled(false);
 
 		pauseButton.setBackground(new Color(204, 204, 255));
 		pauseButton.setForeground(Color.BLUE);
@@ -453,6 +467,11 @@ public class BoggleFrame extends JFrame {
 		pauseButton.setBorderPainted(false);
 		pauseButton.setFocusPainted(false);
 		pauseButton.setRolloverEnabled(false);
+
+		pauseLabel.setBackground(Color.BLACK);
+		pauseLabel.setOpaque(true);
+		pauseLabel.setForeground(Color.WHITE);
+		pauseLabel.setFont(new Font("Calibri", Font.BOLD, 60));
 	}
 
 	public void resetBoard() {
@@ -484,7 +503,8 @@ public class BoggleFrame extends JFrame {
 	}
 
 	public void rotateMatrixRight() {
-
+		resetCells();
+		wordTextField.setText("");
 		for (int r = 0; r < 4; r++) {
 			for (int c = 0; c < 4; c++) {
 				copy[c][4 - 1 - r] = boggle[r][c].getValue();
