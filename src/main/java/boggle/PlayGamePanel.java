@@ -1,27 +1,29 @@
-package fj.boggle;
+package boggle;
 
-import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 public class PlayGamePanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private BufferedImage image;
 
 	public PlayGamePanel() {
 
 		try {
-			image = ImageIO.read(new File("./boggleImage.jpg"));
+			image = ImageIO.read(getClass().getResourceAsStream("/startBackground.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		setLayout(new BorderLayout());
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 	}
 

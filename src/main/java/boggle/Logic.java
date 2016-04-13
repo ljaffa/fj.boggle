@@ -1,21 +1,18 @@
-package fj.boggle;
+package boggle;
 
 import java.util.Random;
-
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 public class Logic {
 
 	private Cell[][] board;
 	private int num;
 	private String letter;
-	private JTextField wordLabel;
 
-	public Logic(JTextField wordLabel) {
-		this.wordLabel = wordLabel;
-	}
+	// private JTextField wordLabel;
+
+	// public Logic(JTextField wordLabel) {
+	// this.wordLabel = wordLabel;
+	// }
 
 	public Cell[][] fillBoard() {
 
@@ -85,17 +82,8 @@ public class Logic {
 				if (found) {
 					return true;
 				}
-
 			}
-
 		}
-
-		JOptionPane
-				.showMessageDialog(null,
-						"This word does not exist in the board.", "BOGGLE",
-						JOptionPane.PLAIN_MESSAGE, new ImageIcon(
-								"./boggleMessage.png"));
-		wordLabel.setText("");
 		return found;
 	}
 
@@ -109,37 +97,35 @@ public class Logic {
 			}
 
 			if (board[x][y].getValue().equalsIgnoreCase("QU")
-					&& (word.charAt(index) == 'q' || word.charAt(index) == 'Q')) {
+					&& ((word.charAt(index) == 'q') || (word.charAt(index) == 'Q'))) {
 				index++;
 				isQ = true;
 			}
 
-			if (!String.valueOf(word.charAt(index)).equalsIgnoreCase(
-					board[x][y].getValue())
-					&& !isQ) {
+			if (!String.valueOf(word.charAt(index)).equalsIgnoreCase(board[x][y].getValue()) && !isQ) {
 				return false;
 			}
 
-			found = checkAround(x + 1, y, word, index + 1)
-					|| checkAround(x, y + 1, word, index + 1)
-					|| checkAround(x - 1, y, word, index + 1)
-					|| checkAround(x, y - 1, word, index + 1)
-					|| checkAround(x + 1, y + 1, word, index + 1)
-					|| checkAround(x - 1, y - 1, word, index + 1)
-					|| checkAround(x - 1, y + 1, word, index + 1)
-					|| checkAround(x + 1, y - 1, word, index + 1);
+			found = checkAround(x + 1, y, word, index + 1) || checkAround(x, y + 1, word, index + 1)
+					|| checkAround(x - 1, y, word, index + 1) || checkAround(x, y - 1, word, index + 1)
+					|| checkAround(x + 1, y + 1, word, index + 1) || checkAround(x - 1, y - 1, word, index + 1)
+					|| checkAround(x - 1, y + 1, word, index + 1) || checkAround(x + 1, y - 1, word, index + 1);
 		}
 		return found;
 
 	}
 
 	public boolean inBounds(int i, int j) {
-		if (i >= 0 && i < 4) {
-			if (j >= 0 && j < 4) {
+		if ((i >= 0) && (i < 4)) {
+			if ((j >= 0) && (j < 4)) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	public String getValueOfCell(int i, int j) {
+		return board[i][j].getValue();
 	}
 
 }
