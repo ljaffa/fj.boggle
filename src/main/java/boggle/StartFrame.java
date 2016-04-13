@@ -57,8 +57,8 @@ public class StartFrame extends JFrame {
 		rulesFrame = new RulesFrame(this);
 		playGamePanel = new PlayGamePanel();
 
-		colorExited = new Color(255,255,255);
-		colorEntered = new Color(255,255,0);
+		colorExited = new Color(255, 255, 255);
+		colorEntered = new Color(255, 255, 0);
 		font1 = new Font("Berlin Sans FB", Font.PLAIN, 60);
 		font2 = new Font("Berlin Sans FB", Font.PLAIN, 63);
 
