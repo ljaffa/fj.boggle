@@ -8,25 +8,19 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-
 import com.google.gson.Gson;
 
 public class BoggleThread extends Thread {
 
 	private final String word;
-	private final BoggleGui frame;
+	private final BoggleFrame frame;
 	private boolean caught;
-	private final JTextField text;
 
-	public BoggleThread(String word, BoggleGui frame, JTextField text) {
+	public BoggleThread(String word, BoggleFrame frame) {
 
 		this.frame = frame;
 		this.word = word;
-		this.text = text;
-		this.caught = false; // initialize to false
+		this.caught = false;
 	}
 
 	@Override
@@ -42,8 +36,7 @@ public class BoggleThread extends Thread {
 			WordExistsJson wordExists = gson.fromJson(reader, WordExistsJson.class);
 
 			if (wordExists.getQuery().getPages().containsKey(-1)) {
-				JOptionPane.showMessageDialog(null, "The word that was entered was not in the dictionary.", "BOGGLE",
-						JOptionPane.PLAIN_MESSAGE, new ImageIcon("./boggleMessage.png"));
+				frame.setWordInvalid();
 				caught = true;
 			}
 
@@ -54,10 +47,11 @@ public class BoggleThread extends Thread {
 		}
 
 		if (!caught) {
+
 			frame.appendWord(word);
 			int size = word.length();
 			frame.addScore(size);
+			frame.setWordValid();
 		}
-
 	}
 }

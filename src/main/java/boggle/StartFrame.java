@@ -26,7 +26,7 @@ public class StartFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	private PlayGamePanel playGamePanel;
-	private BoggleGui boggleFrame;
+	private BoggleFrame boggleFrame;
 	private RulesFrame rulesFrame;
 	private Container container;
 	private JLabel singleButton, doubleButton, rulesButton, highScoreButton;
@@ -96,7 +96,7 @@ public class StartFrame extends JFrame {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				setVisible(false);
-				boggleFrame = new BoggleGui(1);
+				boggleFrame = new BoggleFrame(1);
 				// boggle.setPlayer(1);
 				boggleFrame.setVisible(true);
 			}
@@ -129,7 +129,7 @@ public class StartFrame extends JFrame {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				setVisible(false);
-				boggleFrame = new BoggleGui(2);
+				boggleFrame = new BoggleFrame(2);
 				// boggle.setPlayer(2);
 				boggleFrame.setVisible(true);
 			}
