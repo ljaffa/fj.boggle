@@ -3,8 +3,8 @@ package fj.boggle;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -16,8 +16,12 @@ public class PlayGamePanel extends JPanel {
 	public PlayGamePanel() {
 
 		try {
-			image = ImageIO.read(new File("./boggleImage.jpg"));
+			InputStream in = PlayGamePanel.class
+					.getResourceAsStream("./boggleImage.jpg");
+
+			image = ImageIO.read(in);
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

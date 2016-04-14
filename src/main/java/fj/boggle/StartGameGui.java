@@ -5,11 +5,8 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -47,7 +44,7 @@ public class StartGameGui extends JFrame {
 
 		container.add(button, BorderLayout.SOUTH);
 
-		InputStream in = new FileInputStream("music.wav");
+		InputStream in = StartGameGui.class.getResourceAsStream("music.wav");
 
 		AudioStream music = new AudioStream(in);
 
